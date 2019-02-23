@@ -1,0 +1,9 @@
+version: '2'
+services:
+  webserver:
+    build: ./
+    image: face-detector
+    container_name: face-detector-webrtc
+    tty: true
+    ports:
+      - "8080:3000"
