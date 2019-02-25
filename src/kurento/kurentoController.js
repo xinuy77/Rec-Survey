@@ -120,7 +120,7 @@ function createMediaElements(pipeline, ws, callback) {
 }
 
 function createRecorderEndpoint(uri, pipeline, callback) {
-	pipeline.create('RecorderEndpoint', {uri: uri, mediaProfile: 'WEBM_VIDEO_ONLY'}, (error, recorderEndpoint)=>{
+	pipeline.create('RecorderEndpoint', {uri: uri, mediaProfile: 'MP4'}, (error, recorderEndpoint)=>{
 		if(error) {
 			return callback(error);
 		}

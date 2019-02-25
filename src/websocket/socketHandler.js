@@ -1,7 +1,7 @@
 var   ws                = require('ws');
 var   session           = require('express-session');
 const kurentoController = require('../kurento').kurentoController;
-var recordUri           = 'file:///tmp/kurento-hello-world-recording.webm';
+var recordUri           = 'file:///tmp/kurento-hello-world-recording.mp4';
 var kurentoUri          = 'ws://192.168.0.121:8888/kurento';
 
 var sessionHandler  = session({

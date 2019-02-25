@@ -381,9 +381,13 @@ function WebRtcPeer(mode, options, callback) {
             self.showLocalVideo();
         }
         if (videoStream) {
+          console.log("adding videoStream");
+          console.log(videoStream);
             pc.addStream(videoStream);
         }
         if (audioStream) {
+            console.log("adding audioStream");
+            console.log(audioStream);
             pc.addStream(audioStream);
         }
         var browser = parser.getBrowser();
@@ -403,6 +407,7 @@ function WebRtcPeer(mode, options, callback) {
 		console.log("this is captured stream");
 		console.log(document.getElementById('overlay').captureStream());
                 videoStream = document.getElementById('overlay').captureStream();
+                audioStream = stream;
                 start();
             }).catch(callback);
         }

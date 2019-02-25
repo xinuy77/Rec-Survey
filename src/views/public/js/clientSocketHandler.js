@@ -1,4 +1,7 @@
-var ws = new WebSocket('wss://' + location.host + '/websocket');
+
+var webSocketHost = location.hostname;
+var hostPort      = 2000;
+var ws            = new WebSocket('wss://' + webSocketHost +  ':' + hostPort + '/websocket');
 var webRtcPeer;
 var state = null;
 
@@ -48,7 +51,7 @@ function start() {
 	var options = {
 	  remoteVideo:     remoteVideo,
 	  mediaConstraints: {
-	  	audio: false,
+	  	audio: true,
 		video: {
 			width: 640,
 			framerate: 15
