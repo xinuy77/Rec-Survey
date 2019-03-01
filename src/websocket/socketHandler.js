@@ -1,23 +1,15 @@
 var   ws                = require('ws');
-var   session           = require('express-session');
 const kurentoController = require('../kurento').kurentoController;
 var recordUri           = 'file:///tmp/kurento-hello-world-recording.mp4';
 var kurentoUri          = 'ws://192.168.0.121:8888/kurento';
 
-var sessionHandler  = session({
-    secret : 'none',
-    rolling : true,
-    resave : true,
-    saveUninitialized : true
-});
 
-function initSocketHandler(app, server) {
+function initSocketHandler(app, server, sessionHandler) {
 	var wss = new ws.Server({
 		server : server,
 		path : '/websocket'
 	});
 
-	app.use(sessionHandler);
 
 	/*
 	 * Management of WebSocket messages

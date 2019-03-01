@@ -1,9 +1,14 @@
 version: '2'
 services:
-  webserver:
-    build: ./
-    image: face-detector
-    container_name: face-detector-webrtc
-    tty: true
+    #  webserver:
+    #    build: ./
+    #    image: face-detector
+    #    container_name: face-detector-webrtc
+    #    tty: true
+    #    ports:
+    #      - "2000:2000"
+  database:
+    image: mongo
+    container_name: mongo
     ports:
-      - "8080:3000"
+      - "27017:27017"
