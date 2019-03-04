@@ -15,12 +15,12 @@
     - videoPaths
 
 ## Survey
-- s_id
+- _id
 - picture_id 
 - passage_id
 
 ## Picture
-- picture_path
+- path
 
 ## Passage
 - passage

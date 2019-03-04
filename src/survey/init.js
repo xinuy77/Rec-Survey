@@ -65,7 +65,7 @@ function handlePostResult(req, res) {
         
         for(let i = 0; i < result.assignedSurvey.length; i++) {
             let assignedSurvey = result.assignedSurvey[i];
-        
+
             if(assignedSurvey.s_id != s_id) {
                 continue;
             }
@@ -120,7 +120,7 @@ function handleGetSurvey(req, res) {
                 break;
             }
         }
-
+        console.log("looking for" + s_id);
         dbControl.getSurveyById(s_id, (result, err)=>{
             if(!result || err) {
                 res.sendStatus(400);

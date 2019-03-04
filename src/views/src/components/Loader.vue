@@ -1,21 +1,22 @@
 <template>
-    <div>
-    <div id="blur">
-    </div>
-    <v-progress-circular
-      v-if="!loaded"
-      :size="70"
-      :width="7"
-      color="purple"
-      indeterminate
-      style="z-index:2"
-    ></v-progress-circular>
-    </div>
+  <div>
+    <v-flex id="flex">
+      <v-progress-circular
+        v-if="!loaded"
+        :size="100"
+        :width="9"
+        color="purple"
+        indeterminate
+      ></v-progress-circular>
+    </v-flex>
+  </div>
 </template>
 
 <style>
-    #blur {
-        filter: blur(2px);
-        z-index: 1;
+    #flex {
+        text-align: center;
+        top: 40%;
+        left: 47%;
+        position: absolute;
     }
 </style>
