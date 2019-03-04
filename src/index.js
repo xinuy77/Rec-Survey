@@ -6,21 +6,23 @@ const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const session      = require('express-session');
 
-var sessionHandler  = session({
+let sessionHandler  = session({
     secret : 'none',
     rolling : true,
     resave : true,
     saveUninitialized : true
 });
 
+app.use(bodyParser.urlencoded({
+        extended: true
+}));
+app.use(bodyParser.json());
 app.use(sessionHandler);
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:2000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080'); //TODO change later
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -40,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'views')))
 app.use(express.static(path.join(__dirname, 'public')))
 
 require('./user').init(app);
+require('./survey').init(app);
 
 function initWebsocket(server) {
 	websocket.initSocketHandler(app, server, sessionHandler);

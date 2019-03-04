@@ -16,6 +16,7 @@
                 Except in the winter when the snow or ice prevents, he slowly takes a short walk in the open air each day. We have often urged him to walk more and smoke less but he always answers, ""Banana oil!""  Grandfather likes to be modern in his language.
                         -->
                 {{passage}}
+                {{testProp}}
               </div>
             </v-card-title>
           </v-card>
@@ -31,7 +32,7 @@
         </v-card-title>
         <v-img
           :src="require('./assets/cookietheft.jpg')"
-         
+
         ></v-img>
       </v-card>
     </v-flex>
@@ -48,6 +49,9 @@
         timerIsOn: false,
         passage: "my grand father \n hi"
       }
+    },
+    props: {
+        testProp: String
     },
     methods: {
       count: function() {

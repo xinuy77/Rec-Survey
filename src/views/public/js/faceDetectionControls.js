@@ -38,12 +38,9 @@ function isFaceDetectionModelLoaded() {
 }
 
 async function loadModel() {
-  $('#loader').show();
-
   if (!isFaceDetectionModelLoaded()) {
       await faceapi.nets.ssdMobilenetv1.load('/models');
   }
-  $('#loader').hide();
 }
 
 function drawCroppedFaceToCanvas(result) {

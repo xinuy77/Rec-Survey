@@ -3,16 +3,25 @@
 - u_id
 - u_name
 - password
-- survey_completed
+- assinedSurvey:
     - s_id
+    - completed
+    - maxTry
+    - tryCount
     - start_datetime_picture
     - end_datetime_picture
     - start_datetime_passage
     - end_datetime_passage
-    - recorded video paths
+    - videoPaths
 
-## Survey 
+## Survey
 - s_id
-- picture_paths
+- picture_id 
+- passage_id
+
+## Picture
+- picture_path
+
+## Passage
 - passage
 

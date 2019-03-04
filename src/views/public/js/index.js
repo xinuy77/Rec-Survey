@@ -11,13 +11,12 @@ $(document).ready(function() {
 	if(canvas.getContext) {
 		canvas.getContext('2d');
 	}
-	canvas.style.zIndex="-1";
+	canvas.style.zIndex="-3";
 	canvas.style.visibility = "hidden";
 	canvas.style.position = "absolute";
 	videoEl.style.visibility = "hidden";
 	videoEl.style.zIndex = "-2";
 	videoEl.style.position = "absolute";
-	run();
 	setState(I_CAN_START);
 });
 
@@ -36,7 +35,7 @@ async function onPlay() {
 
 async function run() {
 	// load face detection model
-	await loadModel();
+	//await loadModel();
 	// try to access users webcam and stream the images
 	// to the video element
 	const stream      = await navigator.mediaDevices.getUserMedia({ video: {} });
