@@ -3,21 +3,6 @@ var outputCroppedVideo;
 var remoteVideo;
 
 $(document).ready(function() {
-	console.log("Hello vue");
-	videoEl            = document.getElementById('inputVideo');
-	outputCroppedVideo = document.getElementById('outputCroppedVideo');
-	remoteVideo        = document.getElementById('remoteVideo');
-	var canvas         = document.getElementById('overlay');
-	if(canvas.getContext) {
-		canvas.getContext('2d');
-	}
-	canvas.style.zIndex="-3";
-	canvas.style.visibility = "hidden";
-	canvas.style.position = "absolute";
-	videoEl.style.visibility = "hidden";
-	videoEl.style.zIndex = "-2";
-	videoEl.style.position = "absolute";
-	setState(I_CAN_START);
 });
 
 async function onPlay() {

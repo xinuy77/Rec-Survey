@@ -7,12 +7,13 @@
     <v-btn 
       round 
       color="primary"
+      v-on:click="emitNextPressed()"
     >
       Next Question
     </v-btn>
     <v-spacer></v-spacer>
     <v-toolbar-items>
-      <v-btn 
+      <v-btn
         flat
         v-on:click="logout()"
       >
@@ -29,9 +30,12 @@
         methods: {
             logout() {
                 let url = config.API_URL + "/logout";
-                this.$axios.get(url).then((result)=>{
+                this.$axios.get(url).then(()=>{
                     window.location.href = "/login";
                 });
+            },
+            emitNextPressed() {
+                this.$emit('next-pressed');
             }
         }
     }
