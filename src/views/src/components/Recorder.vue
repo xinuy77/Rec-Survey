@@ -29,12 +29,11 @@
             outputCroppedVideo = document.getElementById('outputCroppedVideo');
             remoteVideo        = document.getElementById('remoteVideo');
             let canvas         = document.getElementById('overlay');
+            
             if(canvas.getContext) {
                 canvas.getContext('2d');
             }
-            console.log(videoEl);
-            console.log(remoteVideo);
-            console.log(canvas);
+            
             setState(I_CAN_START);
             run();
         }

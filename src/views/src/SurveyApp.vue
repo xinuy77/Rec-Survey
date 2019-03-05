@@ -57,7 +57,6 @@
     import config    from "./config";
     import Toolbar   from "./components/Toolbar.vue";
     import Card      from "./components/Card.vue";
-    import Loader    from "./components/Loader.vue";
     import Recorder  from "./components/Recorder.vue";
     import Constants from "./constants";
 
@@ -66,7 +65,6 @@
         components: {
             Toolbar,
             Card,
-            Loader,
             Recorder
         },
         data() {
@@ -84,7 +82,7 @@
             },
             checkSession() {
                 let url = config.API_URL + "/session";
-                this.$axios.get(url).catch((error)=>{
+                this.$axios.get(url).catch(()=>{
                     window.location.href = "/login";
                 });
             },

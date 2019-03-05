@@ -30,7 +30,7 @@
         methods: {
             logout() {
                 let url = config.API_URL + "/logout";
-                this.$axios.get(url).then((result)=>{
+                this.$axios.get(url).then(()=>{
                     window.location.href = "/login";
                 });
             },

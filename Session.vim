@@ -71,15 +71,14 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 104 - ((33 * winheight(0) + 29) / 59)
+let s:l = 60 - ((2 * winheight(0) + 29) / 59)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-104
-normal! 017|
+60
+normal! 05|
 lcd ~/Rec-Survey
 wincmd w
-2wincmd w
 exe 'vert 1resize ' . ((&columns * 102 + 102) / 204)
 exe 'vert 2resize ' . ((&columns * 101 + 102) / 204)
 tabedit ~/Rec-Survey/src/views/src/components/Toolbar.vue
@@ -101,12 +100,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 38 - ((37 * winheight(0) + 29) / 59)
+let s:l = 33 - ((32 * winheight(0) + 29) / 59)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-38
-normal! 017|
+33
+normal! 043|
 lcd ~/Rec-Survey
 tabedit ~/Rec-Survey/src/views/src/components/Recorder.vue
 set splitbelow splitright
@@ -127,12 +126,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 54 - ((53 * winheight(0) + 29) / 59)
+let s:l = 33 - ((32 * winheight(0) + 29) / 59)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-54
-normal! 05|
+33
+normal! 012|
 lcd ~/Rec-Survey
 tabedit ~/Rec-Survey/src/views/public/js/index.js
 set splitbelow splitright
@@ -424,7 +423,7 @@ normal! zt
 8
 normal! 041|
 lcd ~/Rec-Survey
-tabnext 1
+tabnext 2
 set stal=1
 if exists('s:wipebuf') && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
