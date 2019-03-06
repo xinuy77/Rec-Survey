@@ -23,19 +23,25 @@
           }
         },
         methods: {
+            emitRecordStarted() {
+                this.$emit('record-started');
+            }
         },
         mounted() {
             videoEl            = document.getElementById('inputVideo');
             outputCroppedVideo = document.getElementById('outputCroppedVideo');
             remoteVideo        = document.getElementById('remoteVideo');
             let canvas         = document.getElementById('overlay');
-            
+
             if(canvas.getContext) {
                 canvas.getContext('2d');
             }
-            
+
             setState(I_CAN_START);
-            run();
+            run().then(()=>{
+               //start();
+               this.emitRecordStarted();
+            });
         }
     }
 </script>

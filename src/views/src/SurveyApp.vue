@@ -1,52 +1,39 @@
 <template>
   <v-app>
     <div id="app">
-      <Toolbar @next-pressed="next()"/>
-      {{mode}}
+      <Toolbar
+          v-bind:mode="mode"
+          @next-pressed="next()"/>
       <transition name="slide-fade">
         <v-progress-linear
           :indeterminate="true"
           v-if="!loaded"
         ></v-progress-linear>
         <div v-else>
-          <v-alert
-            v-model="alert"
-            dismissible
-            type="success"
-            v-if="recording"
-          >
-            Recording has started.
-          </v-alert>
-          <div
-            style="position: relative"
-            class="margin"
-          >
-            <Card
-              v-bind:mode="mode"
-              v-bind:passage="survey.pas.text"
-            />
-            <v-btn
-              dark 
-              onclick="start()"
-              type="button"
+          <div v-if="recording">
+            <transition name="slide-fade">
+              <v-alert
+                v-model="alert"
+                dismissible
+                type="success"
+                v-if="showRecordingAlert"
+              >
+                Recording has started.
+              </v-alert>
+            </transition>
+            <div
+              style="position: relative"
+              class="margin"
             >
-              Start Recording
-            </v-btn>
-            <v-btn
-              dark
-              v-on:click="testSwitch()"
-              type="button"
-            >
-              Switch
-            </v-btn>
-            <v-btn 
-              flat color="success"
-              @click="alert = true"
-            >
-              success
-            </v-btn>
-            <Recorder/>
+              <Card
+                v-bind:mode="mode"
+                v-bind:passage="survey.pas.text"
+                @time-limit="next()"
+              />
+            </div>
           </div>
+          {{mode}}
+          <Recorder @record-started="startSurvey()"/>
         </div>
       </transition>
     </div>
@@ -72,11 +59,47 @@
             alert: true,
             loaded: false,
             recording: false,
+            showRecordingAlert: false,
+            surveyDone: false,
             survey: {},
-            mode: Constants.MODE.PICTURE_MODE
+            mode: Constants.MODE.PICTURE_MODE,
+            surveyResult:{
+                picture: {
+                    startTime: 0,
+                    endTime: 0
+                },
+                passageRead: {
+                    startTime: 0,
+                    endTime: 0
+                },
+                passageSpeak: {
+                    startTime: 0,
+                    endTime: 0
+                }
+            }
           }
         },
         methods: {
+            postResult() {
+                let url  = config.API_URL + "/result";
+                let data = {
+                    s_id: this.survey._id,
+                    surveyResult: this.surveyResult
+                };
+
+                this.$axios.post(url, data);
+            },
+            startSurvey() {
+                this.setRecording();
+                this.surveyResult.picture.startTime = Date.now();
+            },
+            setRecording() {
+                this.recording          = true;
+                this.showRecordingAlert = true;
+                setTimeout(()=>{this.showRecordingAlert = false},
+                  2000
+                );
+            },
             testSwitch() {
                 this.mode = Constants.MODE.PASSAGE_SPEAK_MODE;
             },
@@ -103,22 +126,28 @@
                 const MODE = Constants.MODE;
 
                 if(this.mode === MODE.PICTURE_MODE) {
+                    this.surveyResult.picture.endTime       = Date.now();
+                    this.surveyResult.passageRead.startTime = Date.now();
                     this.mode = MODE.PASSAGE_READ_MODE;
+                    
                 }
                 else if(this.mode === MODE.PASSAGE_READ_MODE) {
+                    this.surveyResult.passageRead.endTime    = Date.now();
+                    this.surveyResult.passageSpeak.startTime = Date.now();
                     this.mode = MODE.PASSAGE_SPEAK_MODE;
                 }
                 else if(this.mode === MODE.PASSAGE_SPEAK_MODE) {
+                    this.surveyResult.passageSpeak.endTime = Date.now();
                     this.mode = MODE.DONE;
+                    this.postResult();
                 }
             }
         },
         mounted() {
-            console.log("monted");
-        },
-        beforeMount() {
             this.checkSession();
             this.load();
+        },
+        beforeMount() {
         }
     }
 </script>
