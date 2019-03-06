@@ -120,6 +120,7 @@
             async load() {
                 await loadModel();
                 this.survey = await this.getSurvey();
+                s_id        = this.survey._id;
                 this.loaded = true;
             },
             next() {

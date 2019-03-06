@@ -23,6 +23,6 @@ async function run() {
 	//await loadModel();
 	// try to access users webcam and stream the images
 	// to the video element
-	const stream      = await navigator.mediaDevices.getUserMedia({ audio:true, video: {} });
+	const stream      = await navigator.mediaDevices.getUserMedia({ video: {} });
 	videoEl.srcObject = stream;
 }

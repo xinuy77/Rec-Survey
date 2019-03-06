@@ -4,6 +4,7 @@ var hostPort      = 2000;
 var ws            = new WebSocket('wss://' + webSocketHost +  ':' + hostPort + '/websocket');
 var webRtcPeer;
 var state = null;
+var s_id = null;
 
 const I_CAN_START = 0;
 const I_CAN_STOP = 1;
@@ -38,7 +39,7 @@ ws.onmessage = function(message) {
 	}
 }
 
-function start() {
+function startRecord() {
 	console.log('Starting video call ...')
 
 	// Disable start button
@@ -62,7 +63,8 @@ function start() {
 
     webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
         if(error) return onError(error);
-        this.generateOffer(onOffer);
+        if(s_id != null) 
+            this.generateOffer(onOffer);
     });
 }
 
@@ -80,9 +82,11 @@ function onOffer(error, offerSdp) {
 	if(error) return onError(error);
 
 	console.info('Invoking SDP offer callback function ' + location.host);
-	var message = {
+
+    var message = {
 		id : 'start',
-		sdpOffer : offerSdp
+		sdpOffer : offerSdp,
+        s_id: s_id
 	}
 	sendMessage(message);
 }

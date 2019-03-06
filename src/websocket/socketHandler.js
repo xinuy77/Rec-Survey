@@ -1,8 +1,11 @@
 const ws                = require('ws');
+const config            = require('config');
 const kurentoController = require('../kurento').kurentoController;
 const recordUri         = 'file:///tmp/';
-const kurentoUri        = 'ws://192.168.0.121:8888/kurento';
+//const kurentoUri        = 'ws://192.168.0.121:8888/kurento';
 //const kurentoUri        = 'ws://localhost:8888/kurento';
+const kurentoUri        = 'ws://' + config.get('Kurento.host') + 
+                          ':' + config.get('Kurento.port') + '/kurento';
 const dbControl         = require('../mongo').Controller;
 
 function initSocketHandler(app, server, sessionHandler) {
@@ -52,7 +55,7 @@ function initSocketHandler(app, server, sessionHandler) {
                 return;
             }
 			let message  = JSON.parse(_message); //TODO add s_id in message at client side
-            let fileName = "" + new Date() + ".mp4";
+            let fileName = "" + Date.now() + ".mp4";
             let r_uri    = recordUri + fileName;
 
 
@@ -62,7 +65,7 @@ function initSocketHandler(app, server, sessionHandler) {
              if(message.id === 'start' ) {
                 let s_id  = message.s_id;
 
-                setFilePath(s_id, u_id, r_uri, (res, err)=>{
+                setFilePath(s_id, u_id, fileName, (res, err)=>{
                     if(err) {
                         return;
                     }
@@ -98,7 +101,11 @@ function initSocketHandler(app, server, sessionHandler) {
 	});
 }
 
-function setFilePath(s_id, u_id, r_uri, callback) {
+function setFilePath(s_id, u_id, fileName, callback) {
+    if(s_id === null) {
+        callback(null, true);
+        return;
+    }
     dbControl.getUserById(u_id, (result, err)=>{
         if(!result || err) {
             callback(null, true);
@@ -106,14 +113,14 @@ function setFilePath(s_id, u_id, r_uri, callback) {
         }
 
         for(let i = 0; i < result.assignedSurvey.length; i++) {
-            if(result.assignedSurvey.s_id != s_id) {
+            if(result.assignedSurvey[i].s_id != s_id) {
                 continue;
             }
-            if(!result.assignedSurvey.videoPath) {
-                result.assignedSurvey.videoPath = [r_uri];
+            if(!result.assignedSurvey[i].videoPath) {
+                result.assignedSurvey[i].videoPath = [fileName];
             }
             else {
-                result.assignedSurvey.videoPath.push(r_uri);
+                result.assignedSurvey[i].videoPath.push(fileName);
             }
             break;
         }

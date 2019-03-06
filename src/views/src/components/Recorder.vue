@@ -39,7 +39,7 @@
 
             setState(I_CAN_START);
             run().then(()=>{
-               //start();
+               startRecord();
                this.emitRecordStarted();
             });
         }
