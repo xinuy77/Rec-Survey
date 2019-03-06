@@ -8,24 +8,22 @@ function initSurvey(app) {
 }
 
 function handleAssignSurvey(req, res) {
-    
     //TODO ONLY ADMIN USER
-    if(!req.body.u_id) {
-        res.sendStatus(400);
-        return;
-    }
- 
+
     let u_id           = req.body.u_id;
     let assignedSurvey = {
         s_id:     req.body.s_id,
         maxTry:   req.body.maxTry,
-        tryCount: 0
+        tryCount: 0,
+        surveyResult: [],
+        completed: false
     };
-
+   
     if(nullChecker.hasNull(assignedSurvey)) {
         res.sendStatus(400);
         return;
     }
+
     let data = {assignedSurvey: assignedSurvey};
 
     dbControl.pushToUser(u_id, data, (result, err)=>{
@@ -45,8 +43,8 @@ function handlePostResult(req, res) {
 
     let u_id     = req.session.user;
     let s_result = {
-        s_id: req.body.s_id
-                             //TODO add important values later
+        s_id: req.body.s_id,
+        result: req.body.surveyResult                //TODO add important values later
     };
 
     if(nullChecker.hasNull(s_result)) {
@@ -79,13 +77,14 @@ function handlePostResult(req, res) {
                     result.assignedSurvey[i].completed = true;
                 }
             }
+            result.assignedSurvey[i].surveyResult.push(s_result.result);
             break;
         }
 
         dbControl.updateUser(result, (result, err)=>{
             if(err) {
                 res.sendStatus(400);
-                return;            
+                return;
             }
             res.sendStatus(200);
         });

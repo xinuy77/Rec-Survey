@@ -8,8 +8,9 @@
       round 
       color="primary"
       v-on:click="emitNextPressed()"
+      v-if="!done"
     >
-      Next Question
+      Next
     </v-btn>
     <v-spacer></v-spacer>
     <v-toolbar-items>
@@ -24,9 +25,19 @@
 </template>
 
 <script>
-    import config from "../config";
+    import config    from "../config";
+    import Constants from "../constants"; 
+
     export default {
-        name: 'SurveyApp',
+        name: 'SurveyApp', 
+        data() {
+            return {
+                done: false
+            }
+        },
+        props: {
+            mode: Number
+        },
         methods: {
             logout() {
                 let url = config.API_URL + "/logout";
@@ -36,6 +47,13 @@
             },
             emitNextPressed() {
                 this.$emit('next-pressed');
+            }
+        },
+        watch: {
+            mode() {
+                if(this.mode === Constants.MODE.DONE) {
+                    this.done = true;
+                }
             }
         }
     }

@@ -38,13 +38,25 @@
       <v-card-title primary-title>
         <div>
           <h3 class="headline mb-0">
-            Please speak out and describe following picture below.
+            Please speak out and describe following picture below within {{timer_min}} min and {{timer_sec}} seconds.
           </h3>
         </div>
       </v-card-title>
      <v-img
       :src="require('../assets/cookietheft.jpg')"
      ></v-img>
+    </v-card>
+    <v-card
+      id="card"
+      v-else-if="done"
+    >
+      <v-card-title primary-title>
+        <div>
+          <h3 class="headline mb-0">
+              You have finished the survey.
+          </h3>
+        </div>
+      </v-card-title>
     </v-card>
   </v-flex>
 </template>
@@ -56,12 +68,13 @@
         name: 'Card',
         data() {
             return {
-                timer_min:   2,
-                timer_sec:   0,
+                timer_min:   0,
+                timer_sec:   10,
                 timerIsOn:   false,
                 readMode:    false,
                 speakMode:   false,
-                pictureMode: false
+                pictureMode: false,
+                done:        false
             }
         },
         props: {
@@ -69,6 +82,13 @@
             passage: String
         },
         methods: {
+            emitTimeLimit() {
+                this.$emit("time-limit");
+            },
+            resetTimer() {
+              this.timer_min = 0;
+              this.timer_sec = 10;
+            },
             count() {
                 if(this.timer_sec == 0 && this.timer_min > 0) {
                     this.timer_sec = 59;
@@ -76,6 +96,9 @@
                 }
                 else if(this.timer_sec > 0 && this.timer_min >= 0) {
                     this.timer_sec--;
+                }
+                else if(this.timer_sec === 0 && this.timer_min === 0) {
+                    this.emitTimeLimit();
                 }
             },
             startTimer() {
@@ -98,11 +121,20 @@
                     this.speakMode   = false;
                     this.readMode    = false;
                 }
+                else {
+                    this.done        = true;
+                    this.pictureMode = false;
+                    this.speakMode   = false;
+                    this.readMode    = false;
+                }
             }
         },
         watch: {
             mode(newVal) {
+                this.timerIsOn = false;
+                this.resetTimer();
                 this.switchMode();
+                this.timerIsOn = true;
             }
         },
         mounted() {

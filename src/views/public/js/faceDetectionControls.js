@@ -55,7 +55,7 @@ function drawCroppedFaceToCanvas(result) {
 	inputCtx.drawImage( 
 		localVideo, 
 		box.x, box.y, 
-		box.width, box.height, 
+		box.width, box.height,
 		0, 0, 
 		640, 480
 	);
