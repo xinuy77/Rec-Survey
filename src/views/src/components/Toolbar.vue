@@ -51,7 +51,7 @@
         },
         watch: {
             mode() {
-                if(this.mode === Constants.MODE.DONE) {
+                if(this.mode === Constants.MODE.DONE || this.mode === Constants.MODE.NO_SURVEY) {
                     this.done = true;
                 }
             }

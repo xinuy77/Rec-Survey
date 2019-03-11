@@ -4,10 +4,25 @@ const nullChecker = require('../commons').NullChecker;
 
 function initUser(app) {
     app.get('/user/:u_id', (req, res)=>{getUser(req, res)});
+    app.get('/users', (req, res)=>{getAllUsers(req, res)});
     app.get('/session', (req, res)=>{checkUserSession(req, res)});
     app.get('/logout', (req, res)=>{removeUserSession(req, res)});
     app.post('/register', (req, res)=>{handleRegister(req, res)});
     app.post('/login', (req, res)=>{handleLogin(req, res)});
+}
+
+async function getAllUsers(req, res) {
+    if(!req.session.isAdmin) {
+        res.sendStatus(400);
+        return;
+    }
+    
+    let users = await dbControl.getAllUsers().catch(()=>{
+        res.sendStatus(400);
+        return;
+    });
+
+    res.send(JSON.stringify(users));
 }
 
 function removeUserSession(req, res) {
@@ -16,6 +31,11 @@ function removeUserSession(req, res) {
 }
 
 function checkUserSession(req, res) {
+    if(req.session.isAdmin) {
+        let data = {isAdmin: true};
+        res.send(JSON.stringify(data));
+        return;
+    }
     if(req.session.user) {
         res.sendStatus(200);
         return;
@@ -32,7 +52,7 @@ function getUser(req, res) {
         res.sendStatus(400);
         return;
     }
-    
+
     if(req.session.user == u_id) {
         console.log("u_id matched");
         sendUserData(u_id, res);
@@ -67,7 +87,7 @@ function handleLogin(req, res) {
     let password = crypto.createHash('md5').update(req.body.password).digest('hex');
 
     let credential = {
-        username: req.body.username, 
+        username: req.body.username,
         password: password
     };
     
@@ -83,26 +103,38 @@ function handleLogin(req, res) {
         else {
             console.log("id: " + result._id);
             req.session.user = result._id;
-            res.sendStatus(200);
-        }
+            if(result.isAdmin) {
+                req.session.isAdmin = true;
+                let data      = {isAdmin: true};
+                let lastLogin = {
+                    _id:       result._id,
+                    lastLogin: new Date().toDateString() + ' ' + new Date().toLocaleTimeString()
+                };
+                
+                dbControl.updateUser(lastLogin, ()=>{
+                    res.send(JSON.stringify(data));
+                });
+            }
+            else {
+                res.sendStatus(200);
+            }
+        }        
     });
 }
 
 function handleRegister(req, res) {
-    /*let _id = req.session.user;
-    
-    if(!isAdmin(_id)) {
+    if(!req.session.isAdmin) {
         res.sendStatus(400);
         return;
-    }*/
+    }
 
     let password = crypto.createHash('md5').update(req.body.password).digest('hex');
     let user = {
         username:  req.body.username,
-        password:  password//,
-        /*firstName: req.body.firstName,
-        lastName:  req.body.lastName,
-        age:       req.body.age*/
+        password:  password, 
+        isAdmin:   req.body.isAdmin,
+        firstName: req.body.firstName,
+        lastName:  req.body.lastName
     };
     
     console.log(user);

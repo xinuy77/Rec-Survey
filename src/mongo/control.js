@@ -118,7 +118,21 @@ function pushToUser(u_id, data, callback) {
             callback(res, err);
         });
     });
-    
+}
+
+function getAllUsers() {
+    return new Promise((resolve, reject)=>{
+        collection('user', (db)=>{
+            db.find({}).toArray((err, result)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(result);
+                }
+            });
+        });
+    });
 }
 
 module.exports = {
@@ -128,5 +142,6 @@ module.exports = {
     getUserByUsername:     getUserByUsername,
     getSurveyById:         getSurveyById,
     updateUser:            updateUser,
-    pushToUser:            pushToUser
+    pushToUser:            pushToUser,
+    getAllUsers:           getAllUsers
 };

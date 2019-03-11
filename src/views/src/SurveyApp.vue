@@ -28,12 +28,21 @@
               <Card
                 v-bind:mode="mode"
                 v-bind:passage="survey.pas.text"
+                v-bind:picturePath="survey.pic.path"
                 @time-limit="next()"
               />
             </div>
+            </div>
+            <div v-else="noSurvey">
+              <Card
+                v-bind:mode="mode"
+              />
           </div>
           {{mode}}
-          <Recorder @record-started="startSurvey()"/>
+          <Recorder
+            @record-started="startSurvey()"
+            v-bind:mode="mode"
+          />
         </div>
       </transition>
     </div>
@@ -76,7 +85,8 @@
                     startTime: 0,
                     endTime: 0
                 }
-            }
+            },
+            noSurvey: false
           }
         },
         methods: {
@@ -114,6 +124,11 @@
                     let url = config.API_URL + "/survey"
                     this.$axios.get(url).then(({data})=>{
                         resolve(data[0]);
+                    }).catch(()=>{
+                        this.mode     = Constants.MODE.NO_SURVEY;
+                        this.noSurvey = true;
+                        this.loaded   = true;
+                        resolve(null);
                     });
                 });
             },
@@ -141,6 +156,7 @@
                     this.surveyResult.passageSpeak.endTime = Date.now();
                     this.mode = MODE.DONE;
                     this.postResult();
+                    stop();
                 }
             }
         },

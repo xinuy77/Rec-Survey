@@ -11,11 +11,13 @@
       width="640"
       height="480"
     ></canvas>
-    <video  id="remoteVideo" autoplay muted></video>
+    <!--<video  id="remoteVideo" autoplay muted></video>-->
   </div>
 </template>
 
 <script>
+    import Constants from "../constants";
+
     export default {
         name: 'Recorder',
         data() {
@@ -26,6 +28,9 @@
             emitRecordStarted() {
                 this.$emit('record-started');
             }
+        },
+        props: {
+            mode: Number,
         },
         mounted() {
             videoEl            = document.getElementById('inputVideo');
@@ -38,10 +43,12 @@
             }
 
             setState(I_CAN_START);
-            run().then(()=>{
-               startRecord();
-               this.emitRecordStarted();
-            });
+            if(this.mode != Constants.MODE.NO_SURVEY) {
+                run().then(()=>{
+                   startRecord();
+                   this.emitRecordStarted();
+                });
+            }
         }
     }
 </script>

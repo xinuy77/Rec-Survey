@@ -93,14 +93,19 @@
         },
         methods: {
             login() {
-                let url = config.API_URL + "/login";
+                let url = config.api_url + "/login";
                 if(this.username != "" && this.password != "") {
                     let credential = {
                         username: this.username,
                         password: this.password
                     };
-                    this.$axios.post(url, credential).then((res)=>{
-                        window.location.href = "/survey";
+                    this.$axios.post(url, credential).then(({data})=>{
+                        if(data.isAdmin) {
+                            window.location.href = "/admin";
+                        }
+                        else {
+                            window.location.href = "/survey";
+                        }
                     }).catch((err)=>{
                         this.incorrect = true;
                         setTimeout(()=>{
@@ -118,8 +123,14 @@
         },
         beforeMount() {
             let url = config.API_URL + "/session";
-            this.$axios.get(url).then((result)=>{
-                window.location.href = "/survey";
+            console.log(url);
+            this.$axios.get(url).then(({data})=>{
+                if(data.isAdmin) {
+                    window.location.href = "/admin";
+                }
+                else {
+                    window.location.href = "/survey";
+                }
             });
         }
     }

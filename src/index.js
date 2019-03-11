@@ -5,6 +5,7 @@ const websocket    = require('./websocket');
 const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const session      = require('express-session');
+const config       = require('config');
 
 let sessionHandler  = session({
     secret : 'none',
@@ -22,7 +23,7 @@ app.use(cookieParser());
 
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080'); //TODO change later
+    res.setHeader('Access-Control-Allow-Origin', 'https://'+config.get('view.host')+':'+config.get('view.port')); //TODO change later
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');

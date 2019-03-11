@@ -1,6 +1,6 @@
 <template>
   <v-flex xs12 sm6 offset-sm3>
-    <v-card 
+    <v-card
       id="card"
       v-if="readMode"
     >
@@ -43,7 +43,7 @@
         </div>
       </v-card-title>
      <v-img
-      :src="require('../assets/cookietheft.jpg')"
+      :src="require('../assets/'+picturePath)"
      ></v-img>
     </v-card>
     <v-card
@@ -54,6 +54,18 @@
         <div>
           <h3 class="headline mb-0">
               You have finished the survey.
+          </h3>
+        </div>
+      </v-card-title>
+    </v-card>
+    <v-card
+      id="card"
+      v-else-if="noSurvey"
+    >
+      <v-card-title primary-title>
+        <div>
+          <h3 class="headline mb-0">
+              You have no survey assigned. Please contact the administrator.
           </h3>
         </div>
       </v-card-title>
@@ -74,12 +86,14 @@
                 readMode:    false,
                 speakMode:   false,
                 pictureMode: false,
-                done:        false
+                done:        false,
+                noSurvey:    false
             }
         },
         props: {
             mode: Number,
-            passage: String
+            passage: String,
+            picturePath: String
         },
         methods: {
             emitTimeLimit() {
@@ -121,11 +135,14 @@
                     this.speakMode   = false;
                     this.readMode    = false;
                 }
-                else {
+                else if(this.mode === Constants.MODE.DONE){
                     this.done        = true;
                     this.pictureMode = false;
                     this.speakMode   = false;
                     this.readMode    = false;
+                }
+                else {
+                    this.noSurvey = true;
                 }
             }
         },
