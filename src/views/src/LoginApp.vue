@@ -93,7 +93,7 @@
         },
         methods: {
             login() {
-                let url = config.api_url + "/login";
+                let url = config.API_URL + "/login";
                 if(this.username != "" && this.password != "") {
                     let credential = {
                         username: this.username,

@@ -1,11 +1,20 @@
 <template>
   <div>
+    <transition name="slide-fade">
+      <v-alert
+        v-if="showRegistered"
+        v-model="showRegistered"
+        type="success"
+      >
+        User registered.
+      </v-alert>
+    </transition>
     <v-card
       id="button-card"
     >
       <v-card-actions>
         <v-btn 
-          depressed 
+          depressed
           color="primary"
           v-on:click="toggleUserRegisterCard()"
         >
@@ -16,28 +25,43 @@
     <transition name="slide-fade">
       <UserRegisterCard
         v-if="showUserRegister"
+        @user-registered="handleFinishUserRegister()"
+      />
+      <AssignSurveyCard
+        v-if="showAssignSurvey"
+        v-bind:user="user"
       />
     </transition>
-    <UserListTable/>
+    <UserListTable
+      @assign-survey="handleAssignSurvey"
+    />
   </div>
 </template>
 
 <script>
     import UserRegisterCard from "../components/UserRegisterCard.vue";
     import UserListTable    from "../components/UserListTable.vue";
+    import AssignSurveyCard from "../components/AssignSurveyCard.vue";
 
     export default {
         name: 'default',
         components: {
             UserRegisterCard,
-            UserListTable
+            UserListTable,
+            AssignSurveyCard
         },
         data() {
             return {
-                showUserRegister: false
+                showUserRegister: false,
+                showRegistered: false,
+                showAssignSurvey: true,
+                user: null
             }
         },
         methods: {
+            handleAssignSurvey(user) {
+                this.user = user;
+            },
             sayHi() {
                 console.log("Hi");
             },
@@ -48,6 +72,16 @@
                 else {
                   this.showUserRegister = true;
                 }
+            },
+            handleFinishUserRegister() {
+                this.showRegisteredNotification();
+                this.showUserRegister = false;
+            },
+            showRegisteredNotification() {
+                this.showRegistered = true;
+                setTimeout(()=>{
+                    this.showRegistered = false;
+                }, 3000);
             }
         },
         mounted() {

@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="desserts"
+    :items="userList"
     class="elevation-1"
   >
     <template v-slot:items="props">
@@ -11,9 +11,9 @@
       <td>{{ props.item.lastLogin }}</td>
       <td>
         <v-btn 
-          flat 
+          flat
           color="orange"
-          v-on:click="sayHi()"
+          v-on:click="assignSurvey(props.item)"
         >Assign Survey</v-btn>
       </td>
     </template>
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+    import config from "../config";
+
     export default {
         name: 'default',
         data() {
@@ -37,22 +39,24 @@
                     { text: 'Last Login', value: 'lastLogin' },
                     { value: 'assignSurvey' }
                 ],
-                desserts: [
-                    {
-                        username: 'test',
-                        lastName: 'Yamanaka',
-                        firstName: 'Yu',
-                        age: 24,
-                        lastLogin: new Date().toDateString() + ' ' + new Date().toLocaleTimeString()
-                    }
-                ]
+                userList: []
             }
         },
         methods: {
+            getUserList() {
+                let url = config.API_URL + "/users";
+                this.$axios.get(url).then(({data})=>{
+                    this.userList = data;
+                });
+            },
+            assignSurvey(user) {
+                this.$emit("assign-survey", user);
+            }
         },
         mounted() {
         },
         beforeMount() {
+            this.getUserList();
         }
     }
 </script>

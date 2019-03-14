@@ -116,7 +116,7 @@
                   let url = config.API_URL + "/register";
                   console.log(url);
                   this.$axios.post(url, user).then(()=>{
-                      console.log("registered!");
+                      this.$emit('user-registered');
                   });
                 }
             },
