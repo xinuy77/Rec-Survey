@@ -3,8 +3,45 @@ const nullChecker = require('../commons').NullChecker;
 
 function initSurvey(app) {
     app.get('/survey', (req, res)=>{handleGetSurvey(req, res)});
+    app.post('/survey', (req, res)=>{handlePostSurvey(req, res)});
+    app.get('/survey-list', (req, res)=>{handleGetSurveyList(req, res)});
     app.post('/result', (req, res)=>{handlePostResult(req, res)});
     app.post('/assign', (req, res)=>{handleAssignSurvey(req, res)});
+}
+
+function handlePostSurvey(req, res) {
+    if(!req.session.isAdmin) {
+    //    res.sendStatus(400); TODO FIX later 
+    }
+    let survey = {
+        picture_id: req.body.picture_id,
+        passage_id: req.body.passage_id,
+        name: req.body.name
+    }
+
+    if(nullChecker.hasNull(survey)) {
+        res.sendStatus(400);
+        return;
+    }
+
+    dbControl.insertSurvey(survey).then(()=>{
+        res.sendStatus(200);
+    }).catch(()=>{
+        res.sendStatus(400);
+    });
+}
+
+async function handleGetSurveyList(req, res) {
+    if(!req.session.isAdmin) {
+        res.sendStatus(400);
+    }
+
+    let surveyList = await dbControl.getAllSurvey().catch(()=>{
+        res.sendStatus(400);
+        return;
+    });
+
+    res.send(JSON.stringify(surveyList));
 }
 
 function handleAssignSurvey(req, res) {
@@ -16,7 +53,9 @@ function handleAssignSurvey(req, res) {
         maxTry:   req.body.maxTry,
         tryCount: 0,
         surveyResult: [],
-        completed: false
+        completed: false,
+        disabled: false,
+        name: req.body.name
     };
    
     if(nullChecker.hasNull(assignedSurvey)) {

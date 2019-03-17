@@ -2,45 +2,67 @@
   <v-card
     id="register-card"
   >
+    <v-card-title primary-title>
+      <div>
+        <h3 class="headline mb-0">Username: {{user.username}}</h3>
+      </div>
+    </v-card-title>
     <v-form
       ref="form"
       lazy-validation
       id="form"
     >
-    <v-btn
-      depressed
-      color="primary"
-      v-on:click="register()"
->Assign Survey</v-btn>
-
-</v-form>
-  <v-card-title primary-title>
-  <h2 class="subheading mb-0">Assigned Survey</h2>
-  </v-card-title>
-  <v-data-table
-    :headers="headers"
-    :items="user.assignedSurvey"
-    class="elevation-1"
-  >
-    <template v-slot:items="props">
-      <td>{{ props.item.s_id }}</td>
-      <td>{{ props.item.maxTry }}</td>
-      <td>
-        <v-btn
-          flat
-          color="orange"
-          v-on:click="showSurveyResult(props.item.surveyResult)"
-        >Survey Result</v-btn>
-      </td>
-      <td>
-        <v-btn
-          flat
-          color="orange"
-          v-on:click="unAssignSurvey(props.item.s_id)"
-        >Unassign</v-btn>
-      </td>
-    </template>
-  </v-data-table>
+      <v-layout>
+        <v-flex xs8 sd8>
+          <v-select
+            :items="surveyNames"
+            label="Select Survey"
+            v-model="surveyName"
+          ></v-select>
+        </v-flex>
+        <v-flex xs8 sd8>
+          <v-text-field
+            label="Maximum Attempts"
+            mask="###"
+            v-model="maxTry"
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs3 sd8>
+          <v-btn
+            depressed
+            color="primary"
+            v-on:click="assignSurvey()"
+          >Assign Survey</v-btn>
+        </v-flex>
+      </v-layout>
+    </v-form>
+    <v-data-table
+      :headers="headers"
+      :items="user.assignedSurvey"
+      class="elevation-1"
+    >
+      <template v-slot:items="props">
+        <td>{{ props.item.name }}</td>
+        <td>{{ props.item.maxTry }}</td>
+        <td v-if="props.item.completed">Completed</td>
+        <td v-else>In-Complete</td>
+        <td>
+          <v-btn
+            flat
+            color="orange"
+            v-on:click="showSurveyResult(props.item.surveyResult)"
+          >Survey Result</v-btn>
+        </td>
+        <td v-if="!props.item.disabled">
+          <v-btn
+            flat
+            color="red"
+            v-on:click="unAssignSurvey(props.item.s_id)"
+          >Disable</v-btn>
+        </td>
+        <td v-else>Disabled</td>
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 
@@ -50,22 +72,83 @@
     export default {
         data() {
             return {
+                headers: [
+                    { text: 'survey name', value: 'surveyName' },
+                    {
+                        text: 'Maximum Attempts',
+                        align: 'left',
+                        sortable: false,
+                        value: 'maxAttempts'
+                    },
+                    { text: 'Status', value: '' },
+                    { text: '', value: '' },
+                    { text: '', value: '' }
+                ],
+                maxTry: 1,
+                surveyList: [],
+                surveyNames: [],
+                surveyName: "",
+                user: {}
             }
         },
         props: {
-            user: {}
+            userList: Array,
+            selectedIndex: Number
         },
         methods: {
+            getSurveyList() {
+              return new Promise((resolve, reject)=>{
+                  let url = config.API_URL + "/survey-list";
+                  this.$axios.get(url).then(({data})=>{
+                      resolve(data);
+                  });
+              });
+            },
+            setSurveyNames() {
+                for(let survey of this.surveyList) {
+                    this.surveyNames.push(survey.name);
+                }
+            },
+            async handleBeforeMount() {
+                this.surveyList = await this.getSurveyList();
+                this.setSurveyNames();
+                this.updateUserIndex();
+            },
+            assignSurvey() {
+                let url  = config.API_URL + "/assign";
+                let data = {
+                    u_id: this.user._id,
+                    s_id: "",
+                    maxTry: this.maxTry,
+                    name: this.surveyName
+                };
+
+                for(let survey of this.surveyList) {
+                    if(survey.name === this.surveyName) {
+                        data.s_id = survey._id;
+                        break;
+                    }
+                }
+                this.$axios.post(url, data).then(()=>{
+                    this.$emit("assigned-survey");
+                });
+            },
+            updateUserIndex() {
+                this.user = this.userList[this.selectedIndex];
+            }
         },
         watch: {
-            user() {
-
-                console.log(this.user);
+            userList() {
+                this.updateUserIndex();
+            },
+            selectedIndex() {
+                this.updateUserIndex();
             }
         },
         mounted() {
         },
         beforeMount() {
+            this.handleBeforeMount();
         }
     }
 </script>

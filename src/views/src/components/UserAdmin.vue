@@ -29,10 +29,13 @@
       />
       <AssignSurveyCard
         v-if="showAssignSurvey"
-        v-bind:user="user"
+        v-bind:userList="userList"
+        v-bind:selectedIndex="selectedIndex"
+        @assigned-survey="getUserList()"
       />
     </transition>
     <UserListTable
+      v-bind:userList="userList"
       @assign-survey="handleAssignSurvey"
     />
   </div>
@@ -42,6 +45,7 @@
     import UserRegisterCard from "../components/UserRegisterCard.vue";
     import UserListTable    from "../components/UserListTable.vue";
     import AssignSurveyCard from "../components/AssignSurveyCard.vue";
+    import config from "../config";
 
     export default {
         name: 'default',
@@ -54,16 +58,16 @@
             return {
                 showUserRegister: false,
                 showRegistered: false,
-                showAssignSurvey: true,
-                user: null
+                showAssignSurvey: false,
+                userList: [],
+                selectedIndex: null
             }
         },
         methods: {
-            handleAssignSurvey(user) {
-                this.user = user;
-            },
-            sayHi() {
-                console.log("Hi");
+            handleAssignSurvey(index) {
+                this.selectedIndex     = index;
+                this.showAssignSurvey  = true;
+                this.showUserRegister  = false;
             },
             toggleUserRegisterCard() {
                 if(this.showUserRegister) {
@@ -71,6 +75,7 @@
                 }
                 else {
                   this.showUserRegister = true;
+                  this.showAssignSurvey = false;
                 }
             },
             handleFinishUserRegister() {
@@ -82,11 +87,18 @@
                 setTimeout(()=>{
                     this.showRegistered = false;
                 }, 3000);
+            },
+            getUserList() {
+                let url = config.API_URL + "/users";
+                this.$axios.get(url).then(({data})=>{
+                    this.userList = data;
+                });
             }
         },
         mounted() {
         },
         beforeMount() {
+            this.getUserList();
         }
     }
 </script>

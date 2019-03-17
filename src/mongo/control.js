@@ -101,7 +101,7 @@ function updateUser(data, callback) {
     collection('user', (db)=>{
         let newdata = {$set: data};
         let query   = {_id: new ObjectId(data._id)};
-        
+
         db.updateOne(query, newdata, (err, res)=>{
             callback(res, err);
         });
@@ -135,6 +135,39 @@ function getAllUsers() {
     });
 }
 
+function getAllSurvey() {
+    return new Promise((resolve, reject)=>{
+        collection('survey',(db)=>{
+            db.find({}).toArray((err, result)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(result);
+                }
+            });
+        });
+    });
+}
+
+function insertSurvey(survey) {
+    survey.picture_id = new ObjectId(survey.picture_id);
+    survey.passage_id = new ObjectId(survey.passage_id);
+
+    return new Promise((resolve, reject)=>{
+        collection('survey', (db)=>{
+            db.insertOne(survey, (err, res)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(res);
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
     getUserIdByCredential: getUserIdByCredential,
     getUserById:           getUserById,
@@ -143,5 +176,7 @@ module.exports = {
     getSurveyById:         getSurveyById,
     updateUser:            updateUser,
     pushToUser:            pushToUser,
-    getAllUsers:           getAllUsers
+    getAllUsers:           getAllUsers,
+    getAllSurvey:          getAllSurvey,
+    insertSurvey:          insertSurvey
 };

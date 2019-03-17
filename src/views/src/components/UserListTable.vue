@@ -21,7 +21,6 @@
 </template>
 
 <script>
-    import config from "../config";
 
     export default {
         name: 'default',
@@ -38,25 +37,33 @@
                     { text: 'Last Name', value: 'lastName' },
                     { text: 'Last Login', value: 'lastLogin' },
                     { value: 'assignSurvey' }
-                ],
-                userList: []
+               ]
+            }
+        },
+        props: {
+            userList: Array
+        },
+        watch: {
+            userList() {
             }
         },
         methods: {
-            getUserList() {
-                let url = config.API_URL + "/users";
-                this.$axios.get(url).then(({data})=>{
-                    this.userList = data;
-                });
-            },
             assignSurvey(user) {
-                this.$emit("assign-survey", user);
+                let selectedIndex;
+                
+                for(let i = 0; i < this.userList.length; i++) {
+                    if(user._id === this.userList[i]._id) {
+                        selectedIndex = i;
+                        break;
+                    }
+                }
+
+                this.$emit("assign-survey", selectedIndex);
             }
         },
         mounted() {
         },
         beforeMount() {
-            this.getUserList();
         }
     }
 </script>
