@@ -40,27 +40,40 @@
       :headers="headers"
       :items="user.assignedSurvey"
       class="elevation-1"
+      :pagination.sync="pagination"
     >
       <template v-slot:items="props">
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.maxTry }}</td>
-        <td v-if="props.item.completed">Completed</td>
-        <td v-else>In-Complete</td>
-        <td>
+        <td>{{props.item.tryCount}}</td>
+        <td v-if="hasTryCount(props.item.tryCount)">
           <v-btn
             flat
             color="orange"
             v-on:click="showSurveyResult(props.item.surveyResult)"
-          >Survey Result</v-btn>
+          >See Result</v-btn>
+        </td>
+        <td v-else>
+          <v-btn
+            flat
+            color="orange"
+            disabled
+          >No Attempts</v-btn>
         </td>
         <td v-if="!props.item.disabled">
           <v-btn
             flat
             color="red"
-            v-on:click="unAssignSurvey(props.item.s_id)"
+            v-on:click="unAssignSurvey(props.index)"
           >Disable</v-btn>
         </td>
-        <td v-else>Disabled</td>
+        <td v-else>
+          <v-btn
+            flat
+            color="yellow"
+            disabled
+          >Disabled</v-btn>
+        </td>
       </template>
     </v-data-table>
   </v-card>
@@ -68,7 +81,7 @@
 
 <script>
     import config from "../config";
-    
+
     export default {
         data() {
             return {
@@ -80,22 +93,47 @@
                         sortable: false,
                         value: 'maxAttempts'
                     },
-                    { text: 'Status', value: '' },
-                    { text: '', value: '' },
-                    { text: '', value: '' }
+                    { text: 'User Attempts', value: '' },
+                    { text: '', value: '', align: ''},
+                    { text: '', value: ''}
                 ],
                 maxTry: 1,
                 surveyList: [],
                 surveyNames: [],
                 surveyName: "",
-                user: {}
+                user: {},
+                pagination: {
+                    rowsPerPage: 5,
+                    page: 1
+                }
             }
         },
         props: {
             userList: Array,
             selectedIndex: Number
         },
+        computed: {
+        },
         methods: {
+            unAssignSurvey(index) {
+                let url  = config.API_URL + "/unassign";
+                let arrIndex = (this.pagination.page - 1) * this.pagination.rowsPerPage + index;
+                let data = {
+                    _id: this.user._id,
+                    index: arrIndex
+                };
+                this.$axios.post(url, data).then(()=>{
+                    this.$emit("update-userlist");
+                }).catch(()=>{
+                    console.log("error");
+                });
+            },
+            hasTryCount(tryCount) {
+                if(tryCount > 0) {
+                    return true;
+                }
+                return false;
+            },
             getSurveyList() {
               return new Promise((resolve, reject)=>{
                   let url = config.API_URL + "/survey-list";
@@ -130,7 +168,8 @@
                     }
                 }
                 this.$axios.post(url, data).then(()=>{
-                    this.$emit("assigned-survey");
+                    this.$emit("update-userlist");
+                    this.$emit("survey-assigned");
                 });
             },
             updateUserIndex() {

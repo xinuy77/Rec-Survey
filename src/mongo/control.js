@@ -99,14 +99,14 @@ function getSurveyById(s_id, callback) {
 
 function updateUser(data, callback) {
     collection('user', (db)=>{
-        let newdata = {$set: data};
         let query   = {_id: new ObjectId(data._id)};
-
+        delete data._id;
+        let newdata = {$set: data};
+        
         db.updateOne(query, newdata, (err, res)=>{
             callback(res, err);
         });
     });
-    
 }
 
 function pushToUser(u_id, data, callback) {
@@ -168,6 +168,52 @@ function insertSurvey(survey) {
     });
 }
 
+function updateAssignedSurvey(userAssigned, assignedSurvey) {
+    let query = {
+        _id: new ObjectId(userAssigned._id),
+        "assignedSurvey.s_id": new ObjectId(userAssigned.s_id)
+    };
+    let update = {
+        $set: assignedSurvey
+    };
+
+    return new Promise((resolve, reject)=>{
+        collection('user', (db)=>{
+            db.updateOne(query, update, (err, res)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(res);
+                }
+            });
+        });
+    });
+}
+
+function disableAssignedSurvey(userAssigned) {
+    let query = {
+        _id: new ObjectId(userAssigned._id)
+    };
+    let surveyProp = "assignedSurvey."+userAssigned.index+".disabled";
+    let unAssignSurvey = {
+        $set: {[surveyProp]: true}
+    };
+
+    return new Promise((resolve, reject)=>{
+        collection('user', (db)=>{
+            db.updateOne(query, unAssignSurvey, (err, res)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(res);
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
     getUserIdByCredential: getUserIdByCredential,
     getUserById:           getUserById,
@@ -178,5 +224,7 @@ module.exports = {
     pushToUser:            pushToUser,
     getAllUsers:           getAllUsers,
     getAllSurvey:          getAllSurvey,
-    insertSurvey:          insertSurvey
+    insertSurvey:          insertSurvey,
+    updateAssignedSurvey:  updateAssignedSurvey,
+    disableAssignedSurvey: disableAssignedSurvey
 };

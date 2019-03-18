@@ -1,5 +1,6 @@
 const dbControl   = require('../mongo').Controller;
 const nullChecker = require('../commons').NullChecker;
+const crypto      = require('crypto');
 
 function initSurvey(app) {
     app.get('/survey', (req, res)=>{handleGetSurvey(req, res)});
@@ -7,11 +8,34 @@ function initSurvey(app) {
     app.get('/survey-list', (req, res)=>{handleGetSurveyList(req, res)});
     app.post('/result', (req, res)=>{handlePostResult(req, res)});
     app.post('/assign', (req, res)=>{handleAssignSurvey(req, res)});
+    app.post('/unassign', (req, res)=>{handleUnAssignSurvey(req, res)});
+}
+
+function handleUnAssignSurvey(req, res) {
+    if(!req.session.isAdmin) {
+        res.sendStatus(400); 
+        return;
+    } 
+    let userAssigned = {
+        _id: req.body._id,
+        index: req.body.index
+    };
+
+    if(nullChecker.hasNull(userAssigned)) {
+        res.sendStatus(400);
+        return;
+    }
+
+    dbControl.disableAssignedSurvey(userAssigned).then(()=>{
+        res.sendStatus(200);
+    }).catch(()=>{
+        res.sendStatus(400);
+    });
 }
 
 function handlePostSurvey(req, res) {
     if(!req.session.isAdmin) {
-    //    res.sendStatus(400); TODO FIX later 
+        res.sendStatus(400);
     }
     let survey = {
         picture_id: req.body.picture_id,
@@ -48,6 +72,8 @@ function handleAssignSurvey(req, res) {
     //TODO ONLY ADMIN USER
 
     let u_id           = req.body.u_id;
+    let cur_date       = (new Date()).valueOf().toString();
+    let rand           = Math.random().toString();
     let assignedSurvey = {
         s_id:     req.body.s_id,
         maxTry:   req.body.maxTry,
@@ -55,7 +81,8 @@ function handleAssignSurvey(req, res) {
         surveyResult: [],
         completed: false,
         disabled: false,
-        name: req.body.name
+        name: req.body.name,
+        identifier: crypto.createHash('sha1').update(cur_date + rand).digest('hex')
     };
    
     if(nullChecker.hasNull(assignedSurvey)) {
@@ -96,14 +123,12 @@ function handlePostResult(req, res) {
             res.sendStatus(400);
             return;
         }
-        let s_id = req.body.s_id;
-        console.log("printing result");
-        console.log(result);
-        
+        let identifier = req.body.identifier;
+
         for(let i = 0; i < result.assignedSurvey.length; i++) {
             let assignedSurvey = result.assignedSurvey[i];
 
-            if(assignedSurvey.s_id != s_id) {
+            if(assignedSurvey.identifier != identifier) {
                 continue;
             }
             if(result.assignedSurvey[i].completed) {
@@ -151,19 +176,28 @@ function handleGetSurvey(req, res) {
         }
 
         let s_id;
+        let identifier;
 
         for(let survey of assignedSurvey) {
-            if(!survey.completed) {
-                s_id = survey.s_id;
+            if(!survey.completed && !survey.disabled) {
+                s_id       = survey.s_id;
+                identifier = survey.identifier;
                 break;
             }
         }
-        console.log("looking for" + s_id);
+        
+        if(!s_id) {
+            res.sendStatus(400);
+            return;
+        }
+
         dbControl.getSurveyById(s_id, (result, err)=>{
             if(!result || err) {
                 res.sendStatus(400);
                 return;
             }
+
+            result[0].identifier = identifier;
             res.send(JSON.stringify(result));
         });    
     });

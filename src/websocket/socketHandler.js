@@ -24,7 +24,7 @@ function initSocketHandler(app, server, sessionHandler) {
 		let response  = {
 			writeHead : {}
 		};
-
+        request = ws.upgradeReq; //remove this line for new ws version
         sessionHandler(request, response, function() {
             if(!request.session.user) {
                 console.log("This session is not established");

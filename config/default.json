@@ -1,15 +1,15 @@
 {
     "MongoDB": {
-        "host": "192.168.0.121",
+        "host": "192.168.135.133",
         "port": "27017",
         "dbName": "recsurvey"
     },
     "Kurento": {
-        "host": "192.168.0.121",
+        "host": "192.168.135.133",
         "port": "8888"
     },
     "view": {
-        "host": "localhost",
+        "host": "192.168.135.133",
         "port": "8085"
     }
 }

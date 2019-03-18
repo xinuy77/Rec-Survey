@@ -8,12 +8,19 @@
       >
         User registered.
       </v-alert>
+      <v-alert
+        v-if="showAssigned"
+        v-model="showAssigned"
+        type="success"
+      >
+        Survey assigned to user.
+      </v-alert>
     </transition>
     <v-card
       id="button-card"
     >
       <v-card-actions>
-        <v-btn 
+        <v-btn
           depressed
           color="primary"
           v-on:click="toggleUserRegisterCard()"
@@ -23,6 +30,10 @@
       </v-card-actions>
     </v-card>
     <transition name="slide-fade">
+      <SurveyResultCard
+      />
+    </transition>
+    <transition name="slide-fade">
       <UserRegisterCard
         v-if="showUserRegister"
         @user-registered="handleFinishUserRegister()"
@@ -31,7 +42,8 @@
         v-if="showAssignSurvey"
         v-bind:userList="userList"
         v-bind:selectedIndex="selectedIndex"
-        @assigned-survey="getUserList()"
+        @update-userlist="getUserList()"
+        @survey-assigned="showAssignedNote()"
       />
     </transition>
     <UserListTable
@@ -45,6 +57,7 @@
     import UserRegisterCard from "../components/UserRegisterCard.vue";
     import UserListTable    from "../components/UserListTable.vue";
     import AssignSurveyCard from "../components/AssignSurveyCard.vue";
+    import SurveyResultCard from "../components/SurveyResultCard.vue";
     import config from "../config";
 
     export default {
@@ -52,7 +65,8 @@
         components: {
             UserRegisterCard,
             UserListTable,
-            AssignSurveyCard
+            AssignSurveyCard,
+            SurveyResultCard
         },
         data() {
             return {
@@ -60,10 +74,17 @@
                 showRegistered: false,
                 showAssignSurvey: false,
                 userList: [],
-                selectedIndex: null
+                selectedIndex: null,
+                showAssigned: false
             }
         },
         methods: {
+            showAssignedNote() {
+                this.showAssigned = true;
+                setTimeout(()=>{
+                    this.showAssigned = false;
+                }, 3000);
+            },
             handleAssignSurvey(index) {
                 this.selectedIndex     = index;
                 this.showAssignSurvey  = true;
@@ -81,6 +102,7 @@
             handleFinishUserRegister() {
                 this.showRegisteredNotification();
                 this.showUserRegister = false;
+                this.getUserList();
             },
             showRegisteredNotification() {
                 this.showRegistered = true;

@@ -94,7 +94,8 @@
                 let url  = config.API_URL + "/result";
                 let data = {
                     s_id: this.survey._id,
-                    surveyResult: this.surveyResult
+                    surveyResult: this.surveyResult,
+                    identifier: this.survey.identifier
                 };
 
                 this.$axios.post(url, data);
@@ -135,6 +136,7 @@
             async load() {
                 await loadModel();
                 this.survey = await this.getSurvey();
+                console.log(this.survey);
                 s_id        = this.survey._id;
                 this.loaded = true;
             },

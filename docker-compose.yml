@@ -1,14 +1,32 @@
 version: '2'
 services:
-    #  webserver:
-    #    build: ./
-    #    image: face-detector
-    #    container_name: face-detector-webrtc
-    #    tty: true
-    #    ports:
-    #      - "2000:2000"
+  api:
+    build: ./
+    image: rec-survey-api
+    container_name: req-survey-api
+    tty: true
+    ports:
+      - "2000:2000"
+    volumes:
+      - mediafile:/mediafile
+  view:
+    build: ./src/views
+    image: rec-survey-view
+    container_name: req-survey-view
+    tty: true
+    ports:
+      - "8085:8085"
   database:
     image: mongo
     container_name: mongo
     ports:
       - "27017:27017"
+  mediaserver:
+    image: kurento/kurento-media-server:xenial-latest
+    container_name: kurento
+    ports:
+      - "8888:8888"
+    volumes:
+      - mediafile:/mediafile
+volumes:
+  mediafile:

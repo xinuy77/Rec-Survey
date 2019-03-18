@@ -1,3 +1,3 @@
-module.exports = {
-    API_URL: 'https://localhost:2000'
+export default {
+    API_URL: 'https://192.168.135.133:2000'
 };
