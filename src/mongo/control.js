@@ -136,9 +136,30 @@ function getAllUsers() {
 }
 
 function getAllSurvey() {
+    let lookupPicture = {
+        from: "picture",
+        localField: "picture_id",
+        foreignField: "_id",
+        as: "pic"
+    };
+    let lookupPassage = {
+        from: "passage",
+        localField: "passage_id",
+        foreignField: "_id",
+        as: "pas"
+    };
     return new Promise((resolve, reject)=>{
         collection('survey',(db)=>{
-            db.find({}).toArray((err, result)=>{
+            db.aggregate([
+                {
+                    $lookup: lookupPicture
+                },
+                {$unwind: "$pic"},
+                {
+                    $lookup: lookupPassage
+                },
+                {$unwind: "$pas"}
+            ]).toArray((err, result)=>{
                 if(err) {
                     reject(err);
                 }
