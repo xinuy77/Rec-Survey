@@ -11,15 +11,8 @@
       <td>
         <v-btn
           flat
-          color="orange"
-          v-on:click="removeSurvey(props.item)"
-          >Edit</v-btn>
-      </td>
-      <td>
-        <v-btn
-          flat
           color="red"
-          v-on:click="editSurvey(props.item)"
+          v-on:click="removeSurvey(props.item._id)"
         >Remove</v-btn>
       </td>
     </template>
@@ -27,6 +20,7 @@
 </template>
 
 <script>
+    import config from "../config";
 
     export default {
         name: 'default',
@@ -41,8 +35,7 @@
                         value: 'pictureName'
                     },
                     { text: 'Passage', value: 'passageName' },
-                    { text: '', value: 'edit' },
-                    { text: '', value: 'remove' },
+                    { text: '', value: 'remove' }
                ]
             }
         },
@@ -50,10 +43,14 @@
             surveyList: Array
         },
         watch: {
-            userList() {
-            }
         },
         methods: {
+            removeSurvey(survey_id) {
+                let url = config.API_URL + "/survey/"+survey_id;
+                this.$axios.delete(url).then(()=>{
+                    this.$emit("survey-removed");
+                });
+            }
         },
         mounted() {
         },

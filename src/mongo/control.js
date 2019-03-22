@@ -102,7 +102,7 @@ function updateUser(data, callback) {
         let query   = {_id: new ObjectId(data._id)};
         delete data._id;
         let newdata = {$set: data};
-        
+
         db.updateOne(query, newdata, (err, res)=>{
             callback(res, err);
         });
@@ -235,6 +235,81 @@ function disableAssignedSurvey(userAssigned) {
     });
 }
 
+function getAllPicture() {
+    return new Promise((resolve, reject)=>{
+        collection('picture', (db)=>{
+            db.find({}).toArray((err, result)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(result);
+                }
+            });
+        });
+    });
+}
+
+function getAllPassage() {
+    return new Promise((resolve, reject)=>{
+        collection('passage', (db)=>{
+            db.find({}).toArray((err, result)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(result);
+                }
+            });
+        });
+    });
+}
+
+function deleteSurvey(s_id) {
+    let query = {
+        _id: new ObjectId(s_id)
+    }
+    return new Promise((resolve, reject)=>{
+        collection('survey', (db)=>{
+            db.remove(query, (err, result)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(result);
+                }
+            });
+        });
+    });
+}
+
+function bulkDisableAssigned(s_id) {
+    let query = {
+        "assignedSurvey.s_id": s_id
+    };
+    let surveyProp = "assignedSurvey.$[elem].disabled";
+    let unAssignSurvey = {
+        $set: {[surveyProp]: true}
+    };
+    let arrayFilter = {
+        "arrayFilters":[{"elem.s_id": s_id}], 
+        "multi": true
+    }
+
+    return new Promise((resolve, reject)=>{
+        collection('user', (db)=>{
+            db.updateMany(query, unAssignSurvey, arrayFilter, (err, res)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(res);
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
     getUserIdByCredential: getUserIdByCredential,
     getUserById:           getUserById,
@@ -247,5 +322,9 @@ module.exports = {
     getAllSurvey:          getAllSurvey,
     insertSurvey:          insertSurvey,
     updateAssignedSurvey:  updateAssignedSurvey,
-    disableAssignedSurvey: disableAssignedSurvey
+    disableAssignedSurvey: disableAssignedSurvey,
+    getAllPicture:         getAllPicture,
+    getAllPassage:         getAllPassage,
+    deleteSurvey:          deleteSurvey,
+    bulkDisableAssigned:   bulkDisableAssigned
 };

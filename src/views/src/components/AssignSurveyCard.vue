@@ -115,6 +115,9 @@
         computed: {
         },
         methods: {
+            showSurveyResult(result) {
+                this.$emit("show-result", result);
+            },
             unAssignSurvey(index) {
                 let url  = config.API_URL + "/unassign";
                 let arrIndex = (this.pagination.page - 1) * this.pagination.rowsPerPage + index;

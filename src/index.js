@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'https://'+config.get('view.host')+':'+config.get('view.port')); //TODO change later
+    res.setHeader('Access-Control-Allow-Origin', 'https://'+config.get('view.host')+':'+config.get('view.port')); 
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -44,6 +44,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 require('./user').init(app);
 require('./survey').init(app);
+require('./picture').init(app);
+require('./passage').init(app);
 
 function initWebsocket(server) {
 	websocket.initSocketHandler(app, server, sessionHandler);

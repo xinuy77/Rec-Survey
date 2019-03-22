@@ -1,5 +1,21 @@
 <template>
   <div>
+    <transition name="slide-fade">
+      <v-alert
+        v-if="showRegistered"
+        v-model="showRegistered"
+        type="success"
+      >
+        Survey registered.
+      </v-alert>
+      <v-alert
+        v-if="showRemoved"
+        v-model="showRemoved"
+        type="success"
+      >
+        Survey removed.
+      </v-alert>
+    </transition>
     <v-card
       id="button-card"
     >
@@ -13,9 +29,15 @@
         </v-btn>
       </v-card-actions>
     </v-card>
-    <SurveyRegisterCard/>
+    <transition name="slide-fade">
+      <SurveyRegisterCard
+          v-if="showSurveyRegisterCard"
+          @survey-registered="handleSurveyRegistered()"
+      />
+    </transition>
     <SurveyListTable
       v-bind:surveyList="surveyList"
+      @survey-removed="handleSurveyRemoved()"
     />
   </div>
 </template>
@@ -33,17 +55,43 @@
         },
         data() {
             return {
-                surveyList: []
+                surveyList: [],
+                showSurveyRegisterCard: false,
+                showRegistered: false,
+                showRemoved: false
             }
         },
         methods: {
+            async handleSurveyRemoved() {
+                this.surveyList  = await this.getSurveyList();
+                this.showRemoved = true;
+                setTimeout(()=>{
+                    this.showRemoved = false;
+                }, 3000);
+            },
+            async handleSurveyRegistered() {
+                this.toggleSurveyRegisterCard();
+                this.surveyList     = await this.getSurveyList();
+                this.showRegistered = true;
+                setTimeout(()=>{
+                    this.showRegistered = false;
+                }, 3000);
+            },
             getSurveyList() {
-              return new Promise((resolve, reject)=>{
-                  let url = config.API_URL + "/survey-list";
-                  this.$axios.get(url).then(({data})=>{
-                      resolve(data);
-                  });
-              });
+                return new Promise((resolve, reject)=>{
+                    let url = config.API_URL + "/survey-list";
+                    this.$axios.get(url).then(({data})=>{
+                        resolve(data);
+                    });
+                });
+            },
+            toggleSurveyRegisterCard() {
+                if(this.showSurveyRegisterCard) {
+                    this.showSurveyRegisterCard = false;
+                }
+                else {
+                    this.showSurveyRegisterCard = true;
+                }
             }
         },
         mounted() {

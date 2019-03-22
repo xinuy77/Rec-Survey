@@ -7,57 +7,32 @@
       lazy-validation
       id="form"
     >
-    <v-layout>
-      <v-flex xs12 sd8>
-        <v-text-field
-          v-model="username"
-          label="Username"
-          :rules="rules"
-          required
-        ></v-text-field>
-      </v-flex>
-    </v-layout>
       <v-layout>
-        <v-flex xs12 sd4>
+        <v-flex xs12 sd8>
           <v-text-field
-            v-model="password"
-            label="Password"
-            :type="'password'"
+            v-model="surveyName"
+            label="Survey Name"
             :rules="rules"
-            required
-          ></v-text-field>
-        </v-flex>
-        <v-flex xs12 sd4>
-          <v-text-field
-            v-model="confirmPassword"
-            label="Confirm Password"
-            :type="'confirmPassword'"
-            :rules="rulesConfirm"
             required
           ></v-text-field>
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-flex xs12 sd4>
-          <v-text-field
-            v-model="firstName"
-            label="First Name"
+        <v-flex xs8 sd8>
+          <v-select
+            :items="pictureNames"
+            label="Select Picture"
+            v-model="pictureName"
             :rules="rules"
-            required
-          ></v-text-field>
-          <v-checkbox
-            v-model="isAdmin"
-            :label="'Administrator'"
-          >
-          </v-checkbox>
+          ></v-select>
         </v-flex>
-        <v-flex xs12 sd4>
-          <v-text-field
-            v-model="lastName"
-            label="Last Name"
+        <v-flex xs8 sd8>
+          <v-select
+            :items="passageNames"
+            label="Select Passage"
+            v-model="passageName"
             :rules="rules"
-            required
-          ></v-text-field>
+          ></v-select>
         </v-flex>
       </v-layout>
     <v-btn
@@ -75,66 +50,97 @@
     export default {
         data() {
             return {
-                username: "",
-                password: "",
-                firstName: "",
-                lastName: "",
-                confirmPassword: "",
-                isAdmin: false,
                 rules:[
                     v=> !!v || 'this field is required'
                 ],
-                rulesConfirm:[
-                    (v)=> {
-                      if(v === "") {
-                        return 'this field is required'
-                      }
-                      if(this.password != v) {
-                          return 'password does not match';
-                      }
-                    }
-                ]
-                
+                pictureNames: [],
+                pictures: [],
+                pictureName: "",
+                surveyName: "",
+                passageName: "",
+                passageNames: [],
+                passages: []
             }
         },
         methods: {
             register() {
-                if(this.username != "" && this.password != "" &&
-                   this.confirmPassword != "" && this.firstName != "" &&
-                   this.lastName != "") {
-                  if(this.password != this.confirmPassword) {
-                    return;
-                  }
-                  
-                  let user = {
-                      username: this.username,
-                      password: this.password, 
-                      firstName: this.firstName,
-                      lastName: this.lastName,
-                      isAdmin: this.isAdmin
-                  };
-                  let url = config.API_URL + "/register";
-                  console.log(url);
-                  this.$axios.post(url, user).then(()=>{
-                      this.$emit('user-registered');
-                  });
+                let survey = {
+                    picture_id: this.getSelectedPictureId(),
+                    passage_id: this.getSelectedPassageId(),
+                    name:       this.surveyName
+                };
+                let url = config.API_URL + "/survey";
+                
+                if(!survey.picture_id || !survey.passage_id || survey.name === "") {
+                    return; //TODO bad ux
+                }
+
+                this.$axios.post(url, survey).then(()=>{
+                    this.$emit('survey-registered');
+                }).catch((err)=>{
+                    console.log(err);
+                });
+            },
+            getSelectedPassageId() {
+                let passage_id;
+                for(let passage of this.passages) {
+                    if(passage.name === this.passageName) {
+                        passage_id = passage._id;
+                        break;
+                    }
+                }
+                return passage_id;
+            },
+            getSelectedPictureId() {
+                let picture_id;
+                for(let picture of this.pictures) {
+                    if(picture.name === this.pictureName) {
+                        picture_id = picture._id;
+                        break;
+                    }
+                }
+                return picture_id;
+            },
+            getPictureList() {
+                let url = config.API_URL + "/picture-list";
+                
+                return new Promise((resolve, reject)=>{
+                    this.$axios.get(url).then(({data})=>{
+                        resolve(data);
+                    }).catch((err)=>{
+                        reject(err);
+                    });
+                });
+            },
+            getPassageList() {
+                let url = config.API_URL + "/passage-list";
+                
+                return new Promise((resolve, reject)=>{
+                    this.$axios.get(url).then(({data})=>{
+                        resolve(data);
+                    }).catch((err)=>{
+                        reject(err);
+                    });
+                });
+            },
+            async handleFillPictureNames() {
+                this.pictures = await this.getPictureList();
+                for(let picture of this.pictures) {
+                    this.pictureNames.push(picture.name);
                 }
             },
-            sayHi() {
-                console.log("Hi");
-            },
-            toggleUserRegisterCard() {
-                if(this.showUserRegister) {
-                  this.showUserRegister = false;
-                }
-                else {
-                  this.showUserRegister = true;
+            async handleFillPassageNames() {
+                this.passages = await this.getPassageList();
+                for(let passage of this.passages) {
+                    this.passageNames.push(passage.name);
                 }
             }
         },
         mounted() {
         },
         beforeMount() {
+            this.handleFillPictureNames();
+            this.handleFillPassageNames();
         }
     }
 </script>

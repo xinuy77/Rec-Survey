@@ -44,7 +44,8 @@
         v-bind:selectedIndex="selectedIndex"
         @update-userlist="getUserList()"
         @survey-assigned="showAssignedNote()"
-      />
+        @show-result="handleShowSurveyResult"
+    />
     </transition>
     <UserListTable
       v-bind:userList="userList"
@@ -75,10 +76,15 @@
                 showAssignSurvey: false,
                 userList: [],
                 selectedIndex: null,
-                showAssigned: false
+                showAssigned: false,
+                showSurveyResult: false
             }
         },
         methods: {
+            handleShowSurveyResult(result) {
+                this.selectedResut    = result;
+                this.showSurveyResult = true;
+            },
             showAssignedNote() {
                 this.showAssigned = true;
                 setTimeout(()=>{

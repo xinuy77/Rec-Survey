@@ -5,10 +5,34 @@ const crypto      = require('crypto');
 function initSurvey(app) {
     app.get('/survey', (req, res)=>{handleGetSurvey(req, res)});
     app.post('/survey', (req, res)=>{handlePostSurvey(req, res)});
+    app.delete('/survey/:s_id', (req, res)=>{handleDeleteSurvey(req, res)});
     app.get('/survey-list', (req, res)=>{handleGetSurveyList(req, res)});
     app.post('/result', (req, res)=>{handlePostResult(req, res)});
     app.post('/assign', (req, res)=>{handleAssignSurvey(req, res)});
     app.post('/unassign', (req, res)=>{handleUnAssignSurvey(req, res)});
+}
+
+async function handleDeleteSurvey(req, res) {
+    if(!req.session.isAdmin) {
+        res.sendStatus(400);
+        return;
+    }
+    if(!req.params.s_id) {
+        res.sendstatus(400);
+        return;
+    }
+    let s_id = req.params.s_id;
+    
+    try {
+        await dbControl.deleteSurvey(s_id);
+        await dbControl.bulkDisableAssigned(s_id);
+    } catch(err) {
+        console.log(err);
+        res.sendStatus(400);
+        return;
+    }
+
+    res.sendStatus(200);
 }
 
 function handleUnAssignSurvey(req, res) {
