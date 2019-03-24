@@ -40,6 +40,10 @@
       color="primary"
       v-on:click="register()"
     >Register</v-btn>
+        <span
+          v-if="showDuplicatedErr"
+          style="color:red"
+            >Error: Duplicated survey name, please use different name</span>
     </v-form>
   </v-card>
 </template>
@@ -59,7 +63,8 @@
                 surveyName: "",
                 passageName: "",
                 passageNames: [],
-                passages: []
+                passages: [],
+                showDuplicatedErr: false
             }
         },
         methods: {
@@ -78,7 +83,10 @@
                 this.$axios.post(url, survey).then(()=>{
                     this.$emit('survey-registered');
                 }).catch((err)=>{
-                    console.log(err);
+                    this.showDuplicatedErr = true;
+                    setTimeout(()=>{
+                        this.showDuplicatedErr = false;
+                    }, 3000);
                 });
             },
             getSelectedPassageId() {
@@ -108,7 +116,6 @@
                     this.$axios.get(url).then(({data})=>{
                         resolve(data);
                     }).catch((err)=>{
-                        reject(err);
                     });
                 });
             },

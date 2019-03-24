@@ -14,9 +14,16 @@
       :pagination.sync="pagination"
     >
       <template v-slot:items="props">
-        <td>{{ props.item.name }}</td>
-        <td>{{ props.item.maxTry }}</td>
-        <td>{{props.item.tryCount}}</td>
+        <td>{{ props.item.passageReadTime }} sec</td>
+        <td>{{ props.item.passageSpeakTime}} sec</td>
+        <td>{{props.item.pictureTime}} sec</td>
+        <td>
+          <v-btn
+            flat
+            color="primary"
+            v-on:click="getRecordedVideo(props.item.videoPath)"
+          >Video</v-btn>
+        </td>
       </template>
     </v-data-table>
   </v-card>
@@ -29,14 +36,14 @@
         data() {
             return {
                 headers: [
-                    { text: 'survey name', value: 'surveyName' },
+                    { text: 'Passage Read Time', value: 'passageReadTime' },
                     {
-                        text: 'Maximum Attempts',
+                        text: 'Passage Speak Time',
                         align: 'left',
                         sortable: false,
                         value: 'maxAttempts'
                     },
-                    { text: 'User Attempts', value: '' },
+                    { text: 'Picture Explain Time', value: '' },
                     { text: '', value: '', align: ''},
                     { text: '', value: ''}
                 ],
@@ -44,7 +51,8 @@
                     rowsPerPage: 5,
                     page: 1
                 },
-                results: []
+                results: [],
+                milliPerSec: 1000
             }
         },
         props: {
@@ -53,13 +61,30 @@
         computed: {
         },
         methods: {
+            getRecordedVideo(videoPath) {
+                let url = config.API_URL + "/video/"+videoPath;
+                this.$axios({
+                  url: url,
+                  method: 'GET',
+                  responseType: 'blob', // important
+                }).then((response) => {
+                   const url = window.URL.createObjectURL(new Blob([response.data]));
+                   const link = document.createElement('a');
+                   link.href = url;
+                   link.setAttribute('download', videoPath); //or any other extension
+                   document.body.appendChild(link);
+                   link.click();
+                });
+            },
             calcResultTime() {
                 let index = 0;
+                this.results = [];
+                console.log(this.selectedResult.surveyResult);
                 for(let result of this.selectedResult.surveyResult) {
                     let data = {
-                        passageReadTime: result.passageRead.endTime - result.passageRead.startTime,
-                        passageSpeakTime: result.passageSpeak.endTime - result.passageSpeak.startTime,
-                        pictureTime: result.picture.endTime - result.picture.startTime,
+                        passageReadTime: (result.passageRead.endTime - result.passageRead.startTime)/this.milliPerSec,
+                        passageSpeakTime: (result.passageSpeak.endTime - result.passageSpeak.startTime)/this.milliPerSec,
+                        pictureTime: (result.picture.endTime - result.picture.startTime)/this.milliPerSec,
                         videoPath: this.selectedResult.videoPath[index]
                     }
                     this.results.push(data);
@@ -70,8 +95,6 @@
         },
         watch: {
             selectedResult() {
-                //TODO
-                console.log(this.selectedResult);
                 this.calcResultTime();
 
             }
@@ -79,6 +102,7 @@
         mounted() {
         },
         beforeMount() {
+            this.calcResultTime();
         }
     }
 </script>

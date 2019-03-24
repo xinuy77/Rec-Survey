@@ -57,7 +57,7 @@ function handleUnAssignSurvey(req, res) {
     });
 }
 
-function handlePostSurvey(req, res) {
+async function handlePostSurvey(req, res) {
     if(!req.session.isAdmin) {
         res.sendStatus(400);
     }
@@ -70,6 +70,17 @@ function handlePostSurvey(req, res) {
     if(nullChecker.hasNull(survey)) {
         res.sendStatus(400);
         return;
+    }
+    
+    try {
+        let surveyFromDB = await dbControl.getSurveyByName(survey.name);
+        if(surveyFromDB) {
+            res.sendStatus(400);
+            return;
+        }
+    } catch(err) {
+        res.sendStatus(400);
+        return
     }
 
     dbControl.insertSurvey(survey).then(()=>{

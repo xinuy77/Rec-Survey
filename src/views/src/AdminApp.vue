@@ -37,7 +37,7 @@
       <v-list id="logout">
         <v-list-tile
           active-class="true"
-          @click=""
+          @click="logout()"
         >
           <v-list-tile-action>
             <v-icon>exit_to_app</v-icon>
@@ -51,7 +51,7 @@
     <v-content>
       <v-container fluid>
         <v-layout justify-center>
-          <v-flex xs6 offset-sm1>
+          <v-flex xs8 offset-sm1>
             <router-view></router-view>
           </v-flex>
         </v-layout>

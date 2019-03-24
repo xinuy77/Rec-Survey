@@ -1,7 +1,7 @@
 const ws                = require('ws');
 const config            = require('config');
 const kurentoController = require('../kurento').kurentoController;
-const recordUri         = 'file:///tmp/';
+const recordUri         = 'file:///mediafile/';
 //const kurentoUri        = 'ws://192.168.0.121:8888/kurento';
 //const kurentoUri        = 'ws://localhost:8888/kurento';
 const kurentoUri        = 'ws://' + config.get('Kurento.host') + 

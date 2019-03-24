@@ -283,6 +283,24 @@ function deleteSurvey(s_id) {
     });
 }
 
+function deleteUser(u_id) {
+    let query = {
+        _id: new ObjectId(u_id)
+    }
+    return new Promise((resolve, reject)=>{
+        collection('user', (db)=>{
+            db.remove(query, (err, result)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(result);
+                }
+            });
+        });
+    });
+}
+
 function bulkDisableAssigned(s_id) {
     let query = {
         "assignedSurvey.s_id": s_id
@@ -310,10 +328,55 @@ function bulkDisableAssigned(s_id) {
     });
 }
 
+function getSurveyByName(name) {
+    let query = {
+        name: name
+    };
+
+    return new Promise((resolve, reject)=>{
+        collection('survey', (db)=>{
+            db.findOne(query, (err, res)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(res);
+                }
+            });
+        });
+    });
+}
+
+function upsertPassageByName(passage) {
+    let query = {
+        name: passage.name
+    };
+    let option = {
+        upsert: true
+    };
+    let update = {
+        $set: passage
+    };
+
+    return new Promise((resolve, reject)=>{
+        collection('passage', (db)=>{
+            db.updateOne(query, update, option, (err, res)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(res);
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
     getUserIdByCredential: getUserIdByCredential,
     getUserById:           getUserById,
     addNewUser:            addNewUser,
+    deleteUser:            deleteUser,
     getUserByUsername:     getUserByUsername,
     getSurveyById:         getSurveyById,
     updateUser:            updateUser,
@@ -326,5 +389,7 @@ module.exports = {
     getAllPicture:         getAllPicture,
     getAllPassage:         getAllPassage,
     deleteSurvey:          deleteSurvey,
-    bulkDisableAssigned:   bulkDisableAssigned
+    bulkDisableAssigned:   bulkDisableAssigned,
+    getSurveyByName:       getSurveyByName,
+    upsertPassageByName:   upsertPassageByName
 };

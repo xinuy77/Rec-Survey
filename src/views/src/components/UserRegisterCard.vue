@@ -31,7 +31,7 @@
           <v-text-field
             v-model="confirmPassword"
             label="Confirm Password"
-            :type="'confirmPassword'"
+            :type="'password'"
             :rules="rulesConfirm"
             required
           ></v-text-field>
@@ -61,10 +61,29 @@
         </v-flex>
       </v-layout>
     <v-btn
-      depressed
+      v-if="!editUserMode"
       color="primary"
       v-on:click="register()"
     >Register</v-btn>
+    <v-btn
+      v-else
+      depressed
+      color="primary"
+      v-on:click="updateUser()"
+    >Update</v-btn>
+    <v-btn
+      v-if="editUserMode"
+      color="error"
+      v-on:click="removeUser()"
+    >Remove</v-btn>
+        <span
+          v-if="showDuplicatedErr"
+          style="color:red"
+            >Error: Duplicated Username, please use different name</span>
+        <span
+            v-if="showRequiredFieldErr"
+          style="color:red"
+            >Error: Missing required field, please fill out required field</span>
     </v-form>
   </v-card>
 </template>
@@ -86,26 +105,65 @@
                 ],
                 rulesConfirm:[
                     (v)=> {
-                      if(v === "") {
-                        return 'this field is required'
-                      }
-                      if(this.password != v) {
-                          return 'password does not match';
-                      }
+                         if(v === "") {
+                             return 'this field is required'
+                         }
+                         if(this.password != v) {
+                             return 'password does not match';
+                         }
+                         return true;
                     }
-                ]
-                
+                ],
+                showDuplicatedErr: false,
+                showRequiredFieldErr: false
+            }
+        },
+        props: {
+            editUserMode: Boolean,
+            editUser: {}
+        },
+        watch: {
+            editUser() {
+                this.setUserData();
             }
         },
         methods: {
-            register() {
+            setUserData() {
+                this.username  = this.editUser.username;
+                this.firstName = this.editUser.firstName;
+                this.lastName  = this.editUser.lastName;
+                this.isAdmin   = this.editUser.isAdmin;
+            },
+            validInput() {
                 if(this.username != "" && this.password != "" &&
                    this.confirmPassword != "" && this.firstName != "" &&
                    this.lastName != "") {
-                  if(this.password != this.confirmPassword) {
-                    return;
-                  }
-                  
+                    if(this.password === this.confirmPassword) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            alertRequiredFieldErr() {
+                this.showRequiredFieldErr = true;
+                setTimeout(()=>{
+                    this.showRequiredFieldErr = false;
+                }, 3000);
+            },
+            alertDuplicatedErr() {
+                this.showDuplicatedErr = true;
+                setTimeout(()=>{
+                    this.showDuplicatedErr = false;
+                }, 3000);
+            },
+            removeUser() {
+                let url = config.API_URL + "/user/" + this.editUser._id;
+                this.$axios.delete(url).then(()=>{
+                    this.$emit("user-removed");
+                });
+            },
+            register() {
+                if(this.validInput()) {
                   let user = {
                       username: this.username,
                       password: this.password, 
@@ -114,10 +172,35 @@
                       isAdmin: this.isAdmin
                   };
                   let url = config.API_URL + "/register";
-                  console.log(url);
                   this.$axios.post(url, user).then(()=>{
                       this.$emit('user-registered');
+                  }).catch(()=>{
+                      this.alertDuplicatedErr();
                   });
+                }
+                else {
+                    this.alertRequiredFieldErr();
+                }
+            },
+            updateUser() {
+                if(this.validInput()) {
+                  let user = {
+                      _id: this.editUser._id,
+                      username: this.username,
+                      password: this.password, 
+                      firstName: this.firstName,
+                      lastName: this.lastName,
+                      isAdmin: this.isAdmin
+                  };
+                  let url = config.API_URL + "/user";
+                  this.$axios.put(url, user).then(()=>{
+                      this.$emit('user-updated');
+                  }).catch(()=>{
+                      this.alertDuplicatedErr();
+                  });
+                }
+                else {
+                    this.alertRequiredFieldErr();
                 }
             },
             sayHi() {
@@ -135,6 +218,15 @@
         mounted() {
         },
         beforeMount() {
+            this.username  = this.editUser.username;
+            this.firstName = this.editUser.firstName;
+            this.lastName  = this.editUser.lastName;
+            if(this.editUser.isAdmin) {
+                this.isAdmin = true;
+            }
+            else {
+                this.isAdmin = false;
+            }
         }
     }
 </script>

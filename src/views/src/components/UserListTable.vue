@@ -14,7 +14,14 @@
           flat
           color="primary"
           v-on:click="assignSurvey(props.item)"
-        >Survey Detail</v-btn>
+        >Survey</v-btn>
+      </td>
+      <td>
+        <v-btn 
+          flat
+          color="orange"
+          v-on:click="editUser(props.item)"
+        >Edit</v-btn>
       </td>
     </template>
   </v-data-table>
@@ -36,7 +43,8 @@
                     },
                     { text: 'Last Name', value: 'lastName' },
                     { text: 'Last Login', value: 'lastLogin' },
-                    { value: 'assignSurvey' }
+                    { value: 'assignSurvey' },
+                    { value: '' }
                ]
             }
         },
@@ -48,6 +56,9 @@
             }
         },
         methods: {
+            editUser(user) {
+                this.$emit("edit-user", user);
+            },
             assignSurvey(user) {
                 let selectedIndex;
 

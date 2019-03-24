@@ -4,11 +4,70 @@ const nullChecker = require('../commons').NullChecker;
 
 function initUser(app) {
     app.get('/user/:u_id', (req, res)=>{getUser(req, res)});
+    app.put('/user', (req, res)=>{handlePutUser(req, res)});
+    app.delete('/user/:u_id', (req, res)=>{handleDeleteUser(req, res)});
     app.get('/users', (req, res)=>{getAllUsers(req, res)});
     app.get('/session', (req, res)=>{checkUserSession(req, res)});
     app.get('/logout', (req, res)=>{removeUserSession(req, res)});
     app.post('/register', (req, res)=>{handleRegister(req, res)});
     app.post('/login', (req, res)=>{handleLogin(req, res)});
+    app.get('/video/:v_name', (req, res)=>{getUserRecordedVideo(req, res)});
+}
+
+async function handleDeleteUser(req, res) {
+    if(!req.session.isAdmin || !req.params.u_id) {
+        res.sendStatus(400);
+        return;
+    }
+
+    let u_id = req.params.u_id;
+    
+    try {
+        await dbControl.deleteUser(u_id);
+    } catch(err) {
+        res.sendStatus(400);
+        return;
+    }
+
+    res.sendStatus(200);
+}
+
+function handlePutUser(req, res) {
+    if(!req.session.isAdmin) {
+        res.sendStatus(400);
+        return;
+    }
+    let password = crypto.createHash('md5').update(req.body.password).digest('hex');
+    let user = {
+        _id:       req.body._id,
+        username:  req.body.username,
+        password:  password,
+        isAdmin:   req.body.isAdmin,
+        firstName: req.body.firstName,
+        lastName:  req.body.lastName
+    };
+
+    if(nullChecker.hasNull(user)) {
+        res.sendStatus(400);
+        return;
+    }
+
+    dbControl.updateUser(user, (result, err)=>{
+        if(err) {
+            res.sendStatus(400);
+            return;
+        }
+        res.sendStatus(200);
+    });
+}
+
+async function getUserRecordedVideo(req, res) {
+    if(!req.session.isAdmin || !req.params.v_name) {
+        res.sendStatus(400);
+        return;
+    }
+    let videoPath = '/mediafile/'+req.params.v_name;
+    res.download(videoPath);
 }
 
 async function getAllUsers(req, res) {
@@ -101,32 +160,31 @@ function handleLogin(req, res) {
             res.sendStatus(400);
         }
         else {
-            console.log("id: " + result._id);
-            req.session.user = result._id;
-            if(result.isAdmin) {
-                req.session.isAdmin = true;
-                let data      = {isAdmin: true};
-                let lastLogin = {
-                    _id:       result._id,
-                    lastLogin: new Date().toDateString() + ' ' + new Date().toLocaleTimeString()
-                };
-                
-                dbControl.updateUser(lastLogin, ()=>{
+            let lastLogin = {
+                _id:       result._id,
+                lastLogin: new Date().toDateString() + ' ' + new Date().toLocaleTimeString()
+            };
+            dbControl.updateUser(lastLogin, ()=>{
+                console.log("id: " + result._id);
+                req.session.user = result._id;
+                if(result.isAdmin) {
+                    req.session.isAdmin = true;
+                    let data = {isAdmin: true};
                     res.send(JSON.stringify(data));
-                });
-            }
-            else {
-                res.sendStatus(200);
-            }
+                }
+                else {
+                    res.sendStatus(200);
+                }
+            });
         }        
     });
 }
 
 function handleRegister(req, res) {
-    /*if(!req.session.isAdmin) {
+    if(!req.session.isAdmin) {
         res.sendStatus(400);
         return;
-    }*/ //TODO fix later
+    }
 
     let password = crypto.createHash('md5').update(req.body.password).digest('hex');
     let user = {
@@ -148,6 +206,7 @@ function handleRegister(req, res) {
             }
             dbControl.addNewUser(user, (result, err)=>{
                 if(!result || err) {
+                    console.log(err);
                     res.sendStatus(400);
                 }
                 else {

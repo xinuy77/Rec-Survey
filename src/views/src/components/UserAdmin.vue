@@ -2,11 +2,25 @@
   <div>
     <transition name="slide-fade">
       <v-alert
+        v-if="showRemoved"
+        v-model="showRemoved"
+        type="success"
+      >
+        User removed.
+      </v-alert>
+      <v-alert
         v-if="showRegistered"
         v-model="showRegistered"
         type="success"
       >
         User registered.
+      </v-alert>
+      <v-alert
+        v-if="showUpdated"
+        v-model="showUpdated"
+        type="success"
+      >
+        User updated.
       </v-alert>
       <v-alert
         v-if="showAssigned"
@@ -32,13 +46,20 @@
     <transition name="slide-fade">
       <SurveyResultCard
         v-bind:selectedResult="selectedResult"
+        v-if="showSurveyResult"
       />
     </transition>
     <transition name="slide-fade">
       <UserRegisterCard
         v-if="showUserRegister"
         @user-registered="handleFinishUserRegister()"
+        @user-updated="handleFinishUserUpdate()"
+        @user-removed="handleFinishUserRemove()"
+        v-bind:editUser="editUser"
+        v-bind:editUserMode="editUserMode"
       />
+    </transition>
+    <transition name="slide-fade">
       <AssignSurveyCard
         v-if="showAssignSurvey"
         v-bind:userList="userList"
@@ -46,11 +67,12 @@
         @update-userlist="getUserList()"
         @survey-assigned="showAssignedNote()"
         @show-result="handleShowSurveyResult"
-    />
+      />
     </transition>
     <UserListTable
       v-bind:userList="userList"
       @assign-survey="handleAssignSurvey"
+      @edit-user="handleEditUser"
     />
   </div>
 </template>
@@ -74,18 +96,28 @@
             return {
                 showUserRegister: false,
                 showRegistered: false,
+                showUpdated: false,
+                showRemoved: false,
                 showAssignSurvey: false,
                 userList: [],
                 selectedIndex: null,
                 showAssigned: false,
                 showSurveyResult: false,
-                selectedResult: {}
+                selectedResult: {},
+                editUserMode: false,
+                editUser: {}
             }
         },
         methods: {
+            handleEditUser(user) {
+                this.editUserMode     = true;
+                this.editUser         = user;
+                this.showUserRegister = true;
+                this.showAssignSurvey = false;
+            },
             handleShowSurveyResult(result) {
                 this.selectedResult    = result;
-                this.showSurveyResult = true;
+                this.showSurveyResult  = true;
             },
             showAssignedNote() {
                 this.showAssigned = true;
@@ -97,14 +129,18 @@
                 this.selectedIndex     = index;
                 this.showAssignSurvey  = true;
                 this.showUserRegister  = false;
+                this.showSurveyResult  = false;
             },
             toggleUserRegisterCard() {
                 if(this.showUserRegister) {
                   this.showUserRegister = false;
                 }
                 else {
+                  this.editUser         = {};
+                  this.editUserMode     = false;
                   this.showUserRegister = true;
                   this.showAssignSurvey = false;
+                  this.showSurveyResult = false;
                 }
             },
             handleFinishUserRegister() {
@@ -112,10 +148,36 @@
                 this.showUserRegister = false;
                 this.getUserList();
             },
+            handleFinishUserUpdate() {
+                this.showUpdatedNotification();
+                this.showUserRegister = false;
+                this.editUserMode     = false;
+                this.editUser         = {};
+                this.getUserList();
+            },
+            handleFinishUserRemove() {
+                this.showRemovedNotification();
+                this.showUserRegister = false;
+                this.editUserMode     = false;
+                this.editUser         = {};
+                this.getUserList();
+            },
             showRegisteredNotification() {
                 this.showRegistered = true;
                 setTimeout(()=>{
                     this.showRegistered = false;
+                }, 3000);
+            },
+            showUpdatedNotification() {
+                this.showUpdated = true;
+                setTimeout(()=>{
+                    this.showUpdated = false;
+                }, 3000);
+            },
+            showRemovedNotification() {
+                this.showRemoved = true;
+                setTimeout(()=>{
+                    this.showRemoved = false;
                 }, 3000);
             },
             getUserList() {
