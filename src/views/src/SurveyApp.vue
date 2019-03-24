@@ -137,7 +137,7 @@
                 await loadModel();
                 this.survey = await this.getSurvey();
                 console.log(this.survey);
-                s_id        = this.survey._id;
+                identifier  = this.survey.identifier;
                 this.loaded = true;
             },
             next() {

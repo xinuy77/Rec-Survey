@@ -50,7 +50,7 @@
           <v-btn
             flat
             color="orange"
-            v-on:click="showSurveyResult(props.item.surveyResult)"
+            v-on:click="showSurveyResult(props.item)"
           >See Result</v-btn>
         </td>
         <td v-else>

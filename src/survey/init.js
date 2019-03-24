@@ -191,7 +191,7 @@ function handleGetSurvey(req, res) {
             res.sendStatus(400);
             return;
         }
-        
+
         let assignedSurvey = result.assignedSurvey;
 
         if(!assignedSurvey) {

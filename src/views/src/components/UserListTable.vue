@@ -12,9 +12,9 @@
       <td>
         <v-btn 
           flat
-          color="orange"
+          color="primary"
           v-on:click="assignSurvey(props.item)"
-        >Assign Survey</v-btn>
+        >Survey Detail</v-btn>
       </td>
     </template>
   </v-data-table>

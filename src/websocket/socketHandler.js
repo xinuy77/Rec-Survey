@@ -63,9 +63,9 @@ function initSocketHandler(app, server, sessionHandler) {
 			console.log(message.id);
 
              if(message.id === 'start' ) {
-                let s_id  = message.s_id;
+                let identifier = message.identifier;
 
-                setFilePath(s_id, u_id, fileName, (res, err)=>{
+                setFilePath(identifier, u_id, fileName, (res, err)=>{
                     if(err) {
                         return;
                     }
@@ -101,8 +101,8 @@ function initSocketHandler(app, server, sessionHandler) {
 	});
 }
 
-function setFilePath(s_id, u_id, fileName, callback) {
-    if(s_id === null) {
+function setFilePath(identifier, u_id, fileName, callback) {
+    if(identifier === null) {
         callback(null, true);
         return;
     }
@@ -113,7 +113,7 @@ function setFilePath(s_id, u_id, fileName, callback) {
         }
 
         for(let i = 0; i < result.assignedSurvey.length; i++) {
-            if(result.assignedSurvey[i].s_id != s_id) {
+            if(result.assignedSurvey[i].identifier != identifier) {
                 continue;
             }
             if(!result.assignedSurvey[i].videoPath) {

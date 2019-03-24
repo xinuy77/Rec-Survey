@@ -17,34 +17,6 @@
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.maxTry }}</td>
         <td>{{props.item.tryCount}}</td>
-        <td v-if="hasTryCount(props.item.tryCount)">
-          <v-btn
-            flat
-            color="orange"
-            v-on:click="showSurveyResult(props.item.surveyResult)"
-          >See Result</v-btn>
-        </td>
-        <td v-else>
-          <v-btn
-            flat
-            color="orange"
-            disabled
-          >No Attempts</v-btn>
-        </td>
-        <td v-if="!props.item.disabled">
-          <v-btn
-            flat
-            color="red"
-            v-on:click="unAssignSurvey(props.index)"
-          >Disable</v-btn>
-        </td>
-        <td v-else>
-          <v-btn
-            flat
-            color="yellow"
-            disabled
-          >Disabled</v-btn>
-        </td>
       </template>
     </v-data-table>
   </v-card>
@@ -76,12 +48,33 @@
             }
         },
         props: {
+            selectedResult: Object
         },
         computed: {
         },
         methods: {
+            calcResultTime() {
+                let index = 0;
+                for(let result of this.selectedResult.surveyResult) {
+                    let data = {
+                        passageReadTime: result.passageRead.endTime - result.passageRead.startTime,
+                        passageSpeakTime: result.passageSpeak.endTime - result.passageSpeak.startTime,
+                        pictureTime: result.picture.endTime - result.picture.startTime,
+                        videoPath: this.selectedResult.videoPath[index]
+                    }
+                    this.results.push(data);
+                    index++;
+                }
+                console.log(this.results);
+            }
         },
         watch: {
+            selectedResult() {
+                //TODO
+                console.log(this.selectedResult);
+                this.calcResultTime();
+
+            }
         },
         mounted() {
         },

@@ -4,7 +4,7 @@ var hostPort      = 2000;
 var ws            = new WebSocket('wss://' + webSocketHost +  ':' + hostPort + '/websocket');
 var webRtcPeer;
 var state = null;
-var s_id = null;
+var identifier = null;
 
 const I_CAN_START = 0;
 const I_CAN_STOP = 1;
@@ -63,7 +63,7 @@ function startRecord() {
 
     webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
         if(error) return onError(error);
-        if(s_id != null) 
+        if(identifier != null) 
             this.generateOffer(onOffer);
     });
 }
@@ -86,7 +86,7 @@ function onOffer(error, offerSdp) {
     var message = {
 		id : 'start',
 		sdpOffer : offerSdp,
-        s_id: s_id
+        identifier: identifier
 	}
 	sendMessage(message);
 }

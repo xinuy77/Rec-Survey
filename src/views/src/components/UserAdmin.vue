@@ -31,6 +31,7 @@
     </v-card>
     <transition name="slide-fade">
       <SurveyResultCard
+        v-bind:selectedResult="selectedResult"
       />
     </transition>
     <transition name="slide-fade">
@@ -77,12 +78,13 @@
                 userList: [],
                 selectedIndex: null,
                 showAssigned: false,
-                showSurveyResult: false
+                showSurveyResult: false,
+                selectedResult: {}
             }
         },
         methods: {
             handleShowSurveyResult(result) {
-                this.selectedResut    = result;
+                this.selectedResult    = result;
                 this.showSurveyResult = true;
             },
             showAssignedNote() {
