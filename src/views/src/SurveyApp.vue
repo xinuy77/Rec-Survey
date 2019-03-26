@@ -38,7 +38,6 @@
                 v-bind:mode="mode"
               />
           </div>
-          {{mode}}
           <Recorder
             @record-started="startSurvey()"
             v-bind:mode="mode"

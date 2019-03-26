@@ -3,6 +3,7 @@ const crypto      = require('crypto');
 const nullChecker = require('../commons').NullChecker;
 
 function initUser(app) {
+    initDB();
     app.get('/user/:u_id', (req, res)=>{getUser(req, res)});
     app.put('/user', (req, res)=>{handlePutUser(req, res)});
     app.delete('/user/:u_id', (req, res)=>{handleDeleteUser(req, res)});
@@ -12,6 +13,19 @@ function initUser(app) {
     app.post('/register', (req, res)=>{handleRegister(req, res)});
     app.post('/login', (req, res)=>{handleLogin(req, res)});
     app.get('/video/:v_name', (req, res)=>{getUserRecordedVideo(req, res)});
+}
+
+function initDB() {
+    let password = crypto.createHash('md5').update("admin").digest('hex');
+    let user = {
+        username:  "admin",
+        password:  password,
+        isAdmin:   true,
+        firstName: "AdminFirstName",
+        lastName:  "AdminLastName"
+    };
+    
+    dbControl.setOnInsertUserByUsername(user);
 }
 
 async function handleDeleteUser(req, res) {

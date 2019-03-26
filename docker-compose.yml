@@ -1,21 +1,22 @@
 version: '2'
 services:
-  #api:
-  #  build: ./
-  #  image: rec-survey-api
-  #  container_name: req-survey-api
-  #  tty: true
-  #  ports:
-  #    - "2000:2000"
-  #  volumes:
-  #    - mediafile:/mediafile
-  #view:
-  #  build: ./src/views
-  #  image: rec-survey-view
-  #  container_name: req-survey-view
-  #  tty: true
-  #  ports:
-  #    - "8085:8085"
+  express-api:
+    build: ./
+    image: rec-survey-api
+    container_name: req-survey-api
+    tty: true
+    ports:
+      - "2000:2000"
+    volumes:
+      - mediafile:/mediafile
+  nginx:
+    build: ./src/views
+    image: rec-survey-view
+    container_name: req-survey-view
+    tty: true
+    ports:
+      - "8080:443"
+      - "8081:80"
   database:
     image: mongo
     container_name: mongo

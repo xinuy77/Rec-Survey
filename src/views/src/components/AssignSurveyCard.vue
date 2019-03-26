@@ -115,8 +115,12 @@
         computed: {
         },
         methods: {
+            scrollToTop() {
+                window.scrollTo(0,0);
+            },
             showSurveyResult(result) {
                 this.$emit("show-result", result);
+                this.scrollToTop();
             },
             unAssignSurvey(index) {
                 let url  = config.API_URL + "/unassign";

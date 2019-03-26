@@ -56,20 +56,23 @@
             }
         },
         methods: {
+            scrollToTop() {
+                window.scrollTo(0,0);
+            },
             editUser(user) {
+                this.scrollToTop();
                 this.$emit("edit-user", user);
             },
             assignSurvey(user) {
                 let selectedIndex;
-
                 for(let i = 0; i < this.userList.length; i++) {
                     if(user._id === this.userList[i]._id) {
                         selectedIndex = i;
                         break;
                     }
                 }
-
                 this.$emit("assign-survey", selectedIndex);
+                this.scrollToTop();
             }
         },
         mounted() {

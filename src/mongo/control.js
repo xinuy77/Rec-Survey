@@ -372,6 +372,54 @@ function upsertPassageByName(passage) {
     });
 }
 
+function upsertPictureByName(picture) {
+    let query = {
+        name: picture.name
+    };
+    let option = {
+        upsert: true
+    };
+    let update = {
+        $set: picture
+    };
+    return new Promise((resolve, reject)=>{
+        collection('picture', (db)=>{
+            db.updateOne(query, update, option, (err, res)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(res);
+                }
+            });
+        });
+    });
+}
+
+function setOnInsertUserByUsername(user) {
+    let query = {
+        username: user.username
+    };
+    let option = {
+        upsert: true
+    };
+    let update = {
+        $setOnInsert: user
+    };
+    return new Promise((resolve, reject)=>{
+        collection('user', (db)=>{
+            db.updateOne(query, update, option, (err, res)=>{
+                if(err) {
+                    reject(err);
+                }
+                else {
+                    resolve(res);
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
     getUserIdByCredential: getUserIdByCredential,
     getUserById:           getUserById,
@@ -391,5 +439,7 @@ module.exports = {
     deleteSurvey:          deleteSurvey,
     bulkDisableAssigned:   bulkDisableAssigned,
     getSurveyByName:       getSurveyByName,
-    upsertPassageByName:   upsertPassageByName
+    upsertPassageByName:   upsertPassageByName,
+    upsertPictureByName:   upsertPictureByName,
+    setOnInsertUserByUsername: setOnInsertUserByUsername
 };

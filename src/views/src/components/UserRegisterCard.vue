@@ -61,6 +61,7 @@
         </v-flex>
       </v-layout>
     <v-btn
+      depressed
       v-if="!editUserMode"
       color="primary"
       v-on:click="register()"
@@ -72,9 +73,10 @@
       v-on:click="updateUser()"
     >Update</v-btn>
     <v-btn
+      depressed
       v-if="editUserMode"
       color="error"
-      v-on:click="removeUser()"
+      v-on:click="confirmRemove()"
     >Remove</v-btn>
         <span
           v-if="showDuplicatedErr"
@@ -85,6 +87,37 @@
           style="color:red"
             >Error: Missing required field, please fill out required field</span>
     </v-form>
+    <v-dialog
+      v-model="dialog"
+      max-width="365"
+    >
+      <v-card>
+        <v-card-text>
+            All user data including survey results will be removed. <br>
+            Would you like to remove user?
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="green darken-1"
+            flat="flat"
+            @click="dialog = false"
+          >
+            Continue
+          </v-btn>
+
+          <v-btn
+            color="red"
+            flat="flat"
+            @click="removeUser()"
+          >
+            Remove
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -115,7 +148,8 @@
                     }
                 ],
                 showDuplicatedErr: false,
-                showRequiredFieldErr: false
+                showRequiredFieldErr: false,
+                dialog: false
             }
         },
         props: {
@@ -128,6 +162,9 @@
             }
         },
         methods: {
+            confirmRemove() {
+                this.dialog = true;
+            },
             setUserData() {
                 this.username  = this.editUser.username;
                 this.firstName = this.editUser.firstName;
@@ -159,6 +196,7 @@
             removeUser() {
                 let url = config.API_URL + "/user/" + this.editUser._id;
                 this.$axios.delete(url).then(()=>{
+                    this.dialog = false;
                     this.$emit("user-removed");
                 });
             },

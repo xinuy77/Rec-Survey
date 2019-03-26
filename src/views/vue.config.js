@@ -1,5 +1,10 @@
 module.exports = {
     pages: {
+      index: {
+        entry: 'src/entry-point/login/main.js',
+        template: 'public/login.html',
+        filename: 'login.html'
+      },
       admin: {
         entry: 'src/entry-point/admin/main.js', // エントリーポイントとなるjs
         template: 'public/admin.html', // テンプレートのHTML
@@ -11,11 +16,6 @@ module.exports = {
         filename: 'survey.html'
       },
       login: {
-        entry: 'src/entry-point/login/main.js',
-        template: 'public/login.html',
-        filename: 'login.html'
-      },
-      index: {
         entry: 'src/entry-point/login/main.js',
         template: 'public/login.html',
         filename: 'login.html'

@@ -12,7 +12,9 @@
             Please read following passage below within {{timer_min}} minutes and {{timer_sec}} seconds.
           </h3>
           <div id="passage">
-            {{passage}}
+            <span style="white-space: pre-line">
+              {{passage}}
+            </span>
           </div>
         </div>
       </v-card-title>

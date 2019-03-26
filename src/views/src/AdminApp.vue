@@ -70,7 +70,7 @@
           return {
             items: [
               {
-                path: "/user-admin",
+                path: "/admin",
                 title: "Users",
                 icon:  "supervised_user_circle"
               },

@@ -19,15 +19,11 @@ const router = new VueRouter({
     mode: "history",
     routes: [
         {
-            path: "/admin",
-            redirect: "/user-admin"
-        },
-        {
             path: "/survey-admin",
             component: () => import("../../components/SurveyAdmin.vue")
         },
         {
-            path: "/user-admin",
+            path: "/admin",
             component: () => import("../../components/UserAdmin.vue")
         }
     ]
