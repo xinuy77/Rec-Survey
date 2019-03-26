@@ -2,21 +2,21 @@ version: '2'
 services:
   express-api:
     build: ./
-    image: rec-survey-api
+    image: gcr.io/rec-survey/rec-survey-api
     container_name: req-survey-api
     tty: true
     ports:
       - "2000:2000"
     volumes:
-      - mediafile:/mediafile
+        - mediafile:/mediafile:ro
   nginx:
     build: ./src/views
-    image: rec-survey-view
+    image: gcr.io/rec-survey/rec-survey-view
     container_name: req-survey-view
     tty: true
     ports:
-      - "8080:443"
-      - "8081:80"
+      - "443:443"
+      - "80:80"
   database:
     image: mongo
     container_name: mongo

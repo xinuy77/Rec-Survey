@@ -1,3 +1,3 @@
 export default {
-    API_URL: 'https://localhost:2000'
+    API_URL: 'https://'+window.location.hostname+':2000'
 };
