@@ -1,14 +1,5 @@
 version: '2'
 services:
-  express-api:
-    build: ./
-    image: gcr.io/rec-survey/rec-survey-api
-    container_name: req-survey-api
-    tty: true
-    ports:
-      - "2000:2000"
-    volumes:
-        - mediafile:/mediafile:ro
   nginx:
     build: ./src/views
     image: gcr.io/rec-survey/rec-survey-view
@@ -29,5 +20,14 @@ services:
       - "8888:8888"
     volumes:
       - mediafile:/mediafile
+  express-api:
+    build: ./
+    image: gcr.io/rec-survey/rec-survey-api
+    container_name: req-survey-api
+    tty: true
+    ports:
+      - "2000:2000"
+    volumes:
+        - mediafile:/mediafile:ro
 volumes:
   mediafile:
