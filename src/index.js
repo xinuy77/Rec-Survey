@@ -22,8 +22,12 @@ app.use(sessionHandler);
 app.use(cookieParser());
 
 app.use(function (req, res, next) {
+    let port = "";
+    if(config.get('view.port') != "") {
+        port = ":" + config.get('view.port');
+    }
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'https://'+config.get('view.host'));
+    res.setHeader('Access-Control-Allow-Origin', 'https://'+config.get('view.host')+''+port);
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');

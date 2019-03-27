@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   nginx:
     build: ./src/views
@@ -13,6 +13,8 @@ services:
     container_name: mongo
     ports:
       - "27017:27017"
+    healthcheck:
+        test: ["CMD", "echo", "'db.runCommand('ping').ok'", "|", "mongo", "localhost:27017/test", "--quiet"]
   mediaserver:
     image: kurento/kurento-media-server:xenial-latest
     container_name: kurento
@@ -22,6 +24,9 @@ services:
       - mediafile:/mediafile
   express-api:
     build: ./
+    depends_on:
+      database:
+        condition: service_healthy
     image: gcr.io/rec-survey/rec-survey-api
     container_name: req-survey-api
     tty: true
