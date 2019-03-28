@@ -38,5 +38,14 @@ services:
       - "2000:2000"
     volumes:
         - mediafile:/mediafile
+  turnserver:
+    image: instrumentisto/coturn
+    container_name: coturn-server
+    tty: true
+    ports:
+      - "3478:3478"
+      - "49152-65535:49152-65535/udp"
+    volumes:
+        - ./turnserver.conf:/etc/coturn/turnserver.conf
 volumes:
   mediafile:
