@@ -1,0 +1,42 @@
+version: '2.1'
+services:
+  nginx:
+    build: ./src/views
+    image: gcr.io/rec-survey/rec-survey-view
+    container_name: req-survey-view
+    tty: true
+    ports:
+      - "443:443"
+      - "80:80"
+  database:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    healthcheck:
+        test: ["CMD", "echo", "'db.runCommand('ping').ok'", "|", "mongo", "localhost:27017/test", "--quiet"]
+  mediaserver:
+    image: kurento/kurento-media-server:xenial-latest
+    container_name: kurento
+    environment:
+       - KMS_STUN_IP=stun.l.google.com
+       - KMS_STUN_PORT=19302
+       - KMS_TURN_URL=kurento:kurentopw@34.73.7.49:3478
+    ports:
+      - "8888:8888"
+    volumes:
+      - mediafile:/mediafile
+  express-api:
+    build: ./
+    depends_on:
+      database:
+        condition: service_healthy
+    image: gcr.io/rec-survey/rec-survey-api
+    container_name: req-survey-api
+    tty: true
+    ports:
+      - "2000:2000"
+    volumes:
+        - mediafile:/mediafile
+volumes:
+  mediafile:

@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   nginx:
-    build: ./src/views
+    build: ./rec-survey-view
     image: gcr.io/rec-survey/rec-survey-view
     container_name: req-survey-view
     tty: true
@@ -27,7 +27,7 @@ services:
     volumes:
       - mediafile:/mediafile
   express-api:
-    build: ./
+    build: ./rec-survey-api
     depends_on:
       database:
         condition: service_healthy
