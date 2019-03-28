@@ -58,7 +58,10 @@ function startRecord() {
 			framerate: 15
 		}
 	  },
-      onicecandidate : onIceCandidate
+      onicecandidate : onIceCandidate,
+      configuration: {
+            iceServers: [{"urls":"stun:stun.l.google.com:19302"}]
+      }
     }
 
     webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendrecv(options, function(error) {
