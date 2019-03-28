@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: express-api
+  name: express-api
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: express-api
+    spec:
+      containers:
+      - image: gcr.io/rec-survey/rec-survey-api
+        name: req-survey-api
+        ports:
+        - containerPort: 2000
+        resources: {}
+        tty: true
+        volumeMounts:
+        - mountPath: /mediafile
+          name: mediafile
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - name: mediafile
+        persistentVolumeClaim:
+          claimName: mediafile
+          readOnly: true
+status: {}

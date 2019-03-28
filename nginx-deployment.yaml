@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: nginx
+  name: nginx
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: nginx
+    spec:
+      containers:
+      - image: gcr.io/rec-survey/rec-survey-view
+        name: req-survey-view
+        ports:
+        - containerPort: 443
+        - containerPort: 80
+        resources: {}
+        tty: true
+      restartPolicy: Always
+status: {}
