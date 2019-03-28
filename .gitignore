@@ -35,7 +35,6 @@ bower_components
 node_modules/
 jspm_packages/
 config/default.json
-config/
 
 # Typescript v1 declaration files
 typings/
