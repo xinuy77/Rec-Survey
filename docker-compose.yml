@@ -21,6 +21,7 @@ services:
     environment:
        - KMS_STUN_IP=stun.l.google.com
        - KMS_STUN_PORT=19302
+       - KMS_TURN_URL=kurento:kurentopw@34.73.7.49:3478
     ports:
       - "8888:8888"
     volumes:
