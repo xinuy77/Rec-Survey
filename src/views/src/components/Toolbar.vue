@@ -1,7 +1,7 @@
 <template>
   <v-toolbar id="toolbar">
     <v-toolbar-title>
-      Rect Survey
+      Rec Survey
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn 

@@ -1,4 +1,5 @@
-var turn_url      = {"urls" : "turn:34.73.7.49", "username":"kurento", "credential":"kurentopw"}
+var turn_url      = null;
+var stun_url      = null;
 var webSocketHost = location.hostname;
 var hostPort      = 2000;
 var ws            = new WebSocket('wss://' + webSocketHost +  ':' + hostPort + '/websocket');
@@ -49,6 +50,8 @@ function startRecord() {
 	console.log('this is stream');
     console.log(outputCroppedVideo);
 	console.log("lookup");
+    console.log(stun_url);
+    console.log(turn_url);
 	var options = {
 	  remoteVideo:     remoteVideo,
 	  mediaConstraints: {
@@ -60,7 +63,7 @@ function startRecord() {
 	  },
       onicecandidate : onIceCandidate,
       configuration: {
-            iceServers: [{"urls":"stun:stun.l.google.com:19302"}, turn_url]
+            iceServers: [stun_url, turn_url]
       }
     }
 

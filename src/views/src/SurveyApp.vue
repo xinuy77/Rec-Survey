@@ -137,7 +137,21 @@
                 this.survey = await this.getSurvey();
                 console.log(this.survey);
                 identifier  = this.survey.identifier;
+                this.setStunAddress();
+                this.setTurnAddress();
                 this.loaded = true;
+            },
+            setStunAddress() {
+                stun_url = {
+                    "urls": config.STUN.urls
+                };
+            },
+            setTurnAddress() {
+                turn_url = {
+                    "urls" : config.TURN.urls, 
+                    "username": config.TURN.username, 
+                    "credential": config.TURN.credential
+                };
             },
             next() {
                 const MODE = Constants.MODE;
