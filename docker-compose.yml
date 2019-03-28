@@ -33,6 +33,6 @@ services:
     ports:
       - "2000:2000"
     volumes:
-        - mediafile:/mediafile:ro
+        - mediafile:/mediafile
 volumes:
   mediafile:
