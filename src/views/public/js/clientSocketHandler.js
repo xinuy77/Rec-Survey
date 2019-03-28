@@ -1,4 +1,4 @@
-
+var turn_url      = {"urls" : "turn:34.73.7.49", "username":"kurento", "credential":"kurentopw"}
 var webSocketHost = location.hostname;
 var hostPort      = 2000;
 var ws            = new WebSocket('wss://' + webSocketHost +  ':' + hostPort + '/websocket');
@@ -60,7 +60,7 @@ function startRecord() {
 	  },
       onicecandidate : onIceCandidate,
       configuration: {
-            iceServers: [{"urls":"stun:stun.l.google.com:19302"}]
+            iceServers: [{"urls":"stun:stun.l.google.com:19302"}, turn_url]
       }
     }
 
