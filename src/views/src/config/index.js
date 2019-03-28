@@ -1,0 +1,11 @@
+export default {
+    API_URL: 'https://'+window.location.hostname+':2000',
+    TURN: {
+        urls: 'turn:34.73.7.49',
+        username: 'kurento',
+        credential: 'kurentopw'
+    },
+    STUN: {
+        urls: 'stun:stun.l.google.com:19302'
+    }
+};
