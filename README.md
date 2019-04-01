@@ -4,10 +4,12 @@
 1. Configure config/default.json
     - Mongo and Kurento host ip to current hostmachines private ip
     - Set global ip for view port 
-2. Install docker and docker-compose
+2. Configure rec-survey-view/nginx.conf
+    - set reverse proxy lcation to your local private ip
+3. Install docker and docker-compose
     - https://docs.docker.com/compose/install/
     - https://docs.docker.com/install/linux/docker-ce/ubuntu/
-3. Start application by following command
+4. Start application by following command
 
 ```
 $ docker-compose up -d

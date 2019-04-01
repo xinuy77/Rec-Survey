@@ -1,8 +1,7 @@
 var turn_url      = null;
 var stun_url      = null;
 var webSocketHost = location.hostname;
-var hostPort      = 2000;
-var ws            = new WebSocket('wss://' + webSocketHost +  ':' + hostPort + '/websocket');
+var ws            = new WebSocket('wss://' + webSocketHost +  '/api/websocket');
 var webRtcPeer;
 var state = null;
 var identifier = null;
