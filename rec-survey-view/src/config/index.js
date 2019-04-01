@@ -1,5 +1,5 @@
 export default {
-    API_URL: 'https://'+window.location.hostname+':2000',
+    API_URL: 'https://'+window.location.hostname+'/api',
     TURN: {
         urls: 'turn:34.73.7.49',
         username: 'kurento',
