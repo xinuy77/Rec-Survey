@@ -15,13 +15,18 @@ services:
       - "27017:27017"
     healthcheck:
         test: ["CMD", "echo", "'db.runCommand('ping').ok'", "|", "mongo", "localhost:27017/test", "--quiet"]
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
   mediaserver:
     image: kurento/kurento-media-server:xenial-latest
     container_name: kurento
     environment:
        - KMS_STUN_IP=stun.l.google.com
        - KMS_STUN_PORT=19302
-       - KMS_TURN_URL=kurento:kurentopw@34.73.7.49:3478
+       - KMS_TURN_URL=kurento:kurentopw@34.73.191.168:3478
     ports:
       - "8888:8888"
     volumes:
