@@ -5,9 +5,14 @@ const websocket    = require('./websocket');
 const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const session      = require('express-session');
+const RedisStore   = require('connect-redis')(session);
 const config       = require('config');
 
 let sessionHandler  = session({
+    store: new RedisStore({
+        host: config.get('Redis.host'),
+        port: config.get('Redis.port')
+    }),
     secret : 'none',
     rolling : true,
     resave : true,
