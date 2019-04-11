@@ -82,8 +82,8 @@
         name: 'Card',
         data() {
             return {
-                timer_min:   0,
-                timer_sec:   10,
+                timer_min:   2,
+                timer_sec:   0,
                 timerIsOn:   false,
                 readMode:    false,
                 speakMode:   false,
