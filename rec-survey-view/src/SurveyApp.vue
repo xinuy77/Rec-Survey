@@ -135,6 +135,7 @@
             async load() {
                 await loadModel();
                 this.survey = await this.getSurvey();
+                identifier  = this.survey.identifier;
                 this.setStunAddress();
                 this.setTurnAddress();
                 this.loaded = true;
