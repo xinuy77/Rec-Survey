@@ -37,17 +37,17 @@
         data() {
             return {
                 headers: [
-                    { text: 'Date', value: 'surveyDate' },
-                    { text: 'Passage Read Time', value: 'passageReadTime' },
+                    { text: 'Date', value: 'surveyDate', sortable: false},
+                    { text: 'Passage Read Time', value: 'passageReadTime', sortable: false },
                     {
                         text: 'Passage Speak Time',
                         align: 'left',
                         sortable: false,
                         value: 'maxAttempts'
                     },
-                    { text: 'Picture Explain Time', value: '' },
-                    { text: '', value: '', align: ''},
-                    { text: '', value: ''}
+                    { text: 'Picture Explain Time', value: '', sortable: false },
+                    { text: '', value: '', align: '', sortable: false},
+                    { text: '', value: '', sortable: false}
                 ],
                 pagination: {
                     rowsPerPage: 5,
