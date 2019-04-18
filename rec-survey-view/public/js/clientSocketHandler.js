@@ -118,6 +118,8 @@ function stop() {
 		}
 		sendMessage(message);
 	}
+    videoEl.srcObject.getTracks()[0].stop();
+    videoEl.srcObject.getTracks()[1].stop();
 }
 
 function setState(nextState) {
