@@ -95,7 +95,7 @@
                 let data = {
                     s_id: this.survey._id,
                     surveyResult: this.surveyResult,
-                    identifier: this.survey.identifier,
+                    identifier: this.survey.identifier
                 };
                 this.$axios.post(url, data);
             },
