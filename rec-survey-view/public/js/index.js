@@ -12,10 +12,15 @@ async function onPlay() {
 	}
 	const options = getFaceDetectorOptions();
 	const result  = await faceapi.detectSingleFace(videoEl, options);
-	faceDetected  = true;
+	if(result) {
+        faceDetected = true;
+    }
 
-	drawCroppedFaceToCanvas(result);
-	setTimeout(() => onPlay());
+	var draw = setInterval(()=>{drawCroppedFaceToCanvas(result)}, 10);
+	setTimeout(() => {    
+        clearInterval(draw);
+        onPlay();
+    }, 1000);
 }
 
 async function run() {
