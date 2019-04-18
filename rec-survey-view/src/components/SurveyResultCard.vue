@@ -14,6 +14,7 @@
       :pagination.sync="pagination"
     >
       <template v-slot:items="props">
+        <td>{{ props.item.surveyDate }}</td>
         <td>{{ props.item.passageReadTime }} sec</td>
         <td>{{ props.item.passageSpeakTime}} sec</td>
         <td>{{props.item.pictureTime}} sec</td>
@@ -36,6 +37,7 @@
         data() {
             return {
                 headers: [
+                    { text: 'Date', value: 'surveyDate' },
                     { text: 'Passage Read Time', value: 'passageReadTime' },
                     {
                         text: 'Passage Speak Time',
@@ -82,6 +84,7 @@
                 console.log(this.selectedResult.surveyResult);
                 for(let result of this.selectedResult.surveyResult) {
                     let data = {
+                        surveyDate: result.surveyDate,
                         passageReadTime: (result.passageRead.endTime - result.passageRead.startTime)/this.milliPerSec,
                         passageSpeakTime: (result.passageSpeak.endTime - result.passageSpeak.startTime)/this.milliPerSec,
                         pictureTime: (result.picture.endTime - result.picture.startTime)/this.milliPerSec,

@@ -83,7 +83,8 @@
                 passageSpeak: {
                     startTime: 0,
                     endTime: 0
-                }
+                },
+                surveyDate: new Date().toDateString() + ' ' + new Date().toLocaleTimeString()
             },
             noSurvey: false
           }
@@ -94,9 +95,8 @@
                 let data = {
                     s_id: this.survey._id,
                     surveyResult: this.surveyResult,
-                    identifier: this.survey.identifier
+                    identifier: this.survey.identifier,
                 };
-
                 this.$axios.post(url, data);
             },
             startSurvey() {
@@ -135,8 +135,6 @@
             async load() {
                 await loadModel();
                 this.survey = await this.getSurvey();
-                console.log(this.survey);
-                identifier  = this.survey.identifier;
                 this.setStunAddress();
                 this.setTurnAddress();
                 this.loaded = true;
