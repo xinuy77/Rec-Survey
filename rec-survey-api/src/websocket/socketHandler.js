@@ -8,6 +8,10 @@ const kurentoUri        = 'ws://' + config.get('Kurento.host') +
                           ':' + config.get('Kurento.port') + '/kurento';
 const dbControl         = require('../mongo').Controller;
 
+function heartbeat() {
+    this.isAlive = true;
+}
+
 function initSocketHandler(app, server, sessionHandler) {
 	let wss = new ws.Server({
 		server : server,
@@ -19,7 +23,9 @@ function initSocketHandler(app, server, sessionHandler) {
 	 * Management of WebSocket messages
 	 */
 	wss.on('connection', function(ws, req) {
-		let u_id      = null;
+        ws.isAlive = true;
+        ws.on('pong', heartbeat);
+        let u_id      = null;
         let request   = req;
 		let response  = {
 			writeHead : {}
@@ -99,7 +105,16 @@ function initSocketHandler(app, server, sessionHandler) {
 
 		});
 	});
+    const interval = setInterval(function ping() {
+      wss.clients.forEach(function each(ws) {
+        if (ws.isAlive === false) return ws.terminate();
+        ws.isAlive = false;
+        ws.ping(noop);
+      });
+    }, 10000);
 }
+
+function noop(){};
 
 function setFilePath(identifier, u_id, fileName, callback) {
     if(identifier === null) {
