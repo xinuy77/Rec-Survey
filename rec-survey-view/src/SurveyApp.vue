@@ -10,6 +10,10 @@
           v-if="!loaded"
         ></v-progress-linear>
         <div v-else>
+          <v-progress-linear
+            :indeterminate="true"
+            v-if="!recording"
+          ></v-progress-linear>
           <div v-if="recording">
             <transition name="slide-fade">
               <v-alert

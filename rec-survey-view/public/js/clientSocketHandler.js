@@ -57,7 +57,7 @@ function startRecord() {
 	  	audio: true,
 		video: {
 			width: 640,
-			framerate: 15
+			framerate: 30
 		}
 	  },
       onicecandidate : onIceCandidate,

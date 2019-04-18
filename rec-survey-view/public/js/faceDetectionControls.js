@@ -10,6 +10,12 @@ let inputSize            = 512;
 let scoreThreshold       = 0.5;
 //mtcnn options
 let minFaceSize          = 20;
+let box                  = {
+    x: null,
+    y: null,
+    width: null,
+    height: null
+};
 
 function getFaceDetectorOptions() {
 	return selectedFaceDetector === SSD_MOBILENETV1
@@ -44,13 +50,18 @@ async function loadModel() {
 }
 
 function drawCroppedFaceToCanvas(result) {
-	if(!result.box) {
-		return;
-	}
 	var localVideo = $('#inputVideo').get(0);
 	var inputCtx   = $( '#overlay' )[ 0 ].getContext( '2d' );
-	var box        = result.box;
-	
+	if(result) {
+        if(result.box) {
+            box.x = result.box.x;
+            box.y = result.box.y;
+            if(!box.width) {
+                box.width  = result.box.width * 1.3;
+                box.height = result.box.height * 1.3;
+            }
+        }
+    }
 	// draw video to input canvas
 	inputCtx.drawImage( 
 		localVideo, 

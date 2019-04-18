@@ -1,6 +1,7 @@
 var videoEl;
 var outputCroppedVideo;
 var remoteVideo;
+var faceDetected = false;
 
 $(document).ready(function() {
 });
@@ -11,10 +12,9 @@ async function onPlay() {
 	}
 	const options = getFaceDetectorOptions();
 	const result  = await faceapi.detectSingleFace(videoEl, options);
-	
-	if (result) {
-		drawCroppedFaceToCanvas(result);
-	}
+	faceDetected  = true;
+
+	drawCroppedFaceToCanvas(result);
 	setTimeout(() => onPlay());
 }
 

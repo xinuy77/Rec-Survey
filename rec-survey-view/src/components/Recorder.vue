@@ -27,6 +27,15 @@
         methods: {
             emitRecordStarted() {
                 this.$emit('record-started');
+            },
+            record() {
+                if(faceDetected) {
+                    startRecord();
+                    this.emitRecordStarted();
+                }
+                else {
+                    setTimeout(()=>this.record());
+                }
             }
         },
         props: {
@@ -45,8 +54,7 @@
             setState(I_CAN_START);
             if(this.mode != Constants.MODE.NO_SURVEY) {
                 run().then(()=>{
-                   startRecord();
-                   this.emitRecordStarted();
+                    this.record();
                 });
             }
         }
