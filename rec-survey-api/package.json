@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "env TZ='America/New_York' node app.js"
   },
   "author": "",
   "license": "ISC",
