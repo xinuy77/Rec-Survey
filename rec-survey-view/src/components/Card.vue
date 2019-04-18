@@ -102,8 +102,8 @@
                 this.$emit("time-limit");
             },
             resetTimer() {
-              this.timer_min = 0;
-              this.timer_sec = 10;
+              this.timer_min = 2;
+              this.timer_sec = 0;
             },
             count() {
                 if(this.timer_sec == 0 && this.timer_min > 0) {
