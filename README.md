@@ -33,7 +33,6 @@ Following ports needs to be opened
 |:------------------:|:-------------:|
 |Kurento Media Server|udp: 0-65535   |
 |coTurn Server       |tcp & udp: 3478|
-|rec-survey-api      |tcp: 2000      |
 |rec-survey-view     |tcp: 80, 443   |
 
 ## Specifications for Deployment
