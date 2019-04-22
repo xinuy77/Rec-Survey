@@ -15,7 +15,7 @@
 $ docker-compose up -d
 ```
 
-## Setup in cloud server
+## Setup in hosted server
 You would need to setup TURN server to host this application in cloud environment  
 1. Setup TURN server based on https://doc-kurento.readthedocs.io/en/6.6.2/faq.html
     - tips: you can check connectivity of your TURN server here: https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
