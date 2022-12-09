@@ -10,11 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.20.1",
     "config": "^3.0.1",
     "connect-redis": "^3.4.1",
     "cookie-parser": "^1.3.5",
-    "express": "^4.12.4",
+    "express": "^4.18.2",
     "express-session": "^1.10.3",
     "kurento-client": "^6.9.0",
     "mongodb": "^3.1.13",
